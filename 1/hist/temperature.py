@@ -26,7 +26,6 @@ ax[0].set_xlim((1e2, 1e9))
 ax[0].set_ylim((1e2, 1e9))
 ax[0].set_xscale('log')
 ax[0].set_yscale('log')
-#ax[0].scatter(s.gas['T_at_infall'][s.gas['num_recycled'] > 0]*1.1, s.gas['T_at_ejection'][s.gas['num_recycled'] > 0])
 ax[0].scatter(T_infall, T_ejection)
 ax[0].plot([0, 1e80], [0, 1e80], color='r')
 
