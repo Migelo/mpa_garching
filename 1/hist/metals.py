@@ -19,15 +19,15 @@ metals_ejection = [item for sublist in metals_ejection for item in sublist]
 metals_infall = [item for sublist in metals_infall for item in sublist]
 
 fig, ax = plt.subplots(2)
-plt.tight_layout()
-ax[0].set_xlabel("$T_{infall}$")
-ax[0].set_ylabel("$T_{ejection}$")
-ax[0].set_xlim((-1e6, 2.1e7))
-ax[0].set_ylim((-1e6, 2e7))
+#plt.tight_layout()
+ax[0].set_xlabel("metals at infall [$M_{\odot}$]")
+ax[0].set_ylabel("metals at ejection [$M_{\odot}$]")
+ax[0].set_xlim((0, 1e5))
+ax[0].set_ylim((0, 1.2e5))
 ax[0].scatter(s.gas['metals_at_infall'][s.gas['num_recycled'] > -1], s.gas['metals_at_ejection'][s.gas['num_recycled'] > -1])
 
 ax[1].set_ylabel("count")
-ax[1].set_xlabel("z")
+ax[1].set_xlabel("$M_{\odot}$")
 ax[1].hist(metals_infall, bins=np.linspace(0, 1.2e4, 100), alpha=.5, label='infall')
 ax[1].hist(metals_ejection, bins=np.linspace(0, 1.2e4, 100), alpha=.5, label='ejection')
 plt.legend(loc='best')
