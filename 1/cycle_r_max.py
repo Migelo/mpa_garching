@@ -6,8 +6,8 @@ filename = __file__
 
 s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/out/snap_M0977_4x_470', gas_trace='/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/gastrace_M0977_4x_disc-Uebler_070_470.dat')
 
-cycle_r_max = [item[item > 0] for item in s.gas['cycle_r_max'][s.gas['num_recycled'] > 0]]
-particle_mass = [np.average(item[item > 0]) for item in s.gas['mass_at_ejection'][s.gas['num_recycled'] > 0]]
+cycle_r_max = [item[item > 0] for item in s.gas['cycle_r_max'][s.gas['num_recycled'] > -1]]
+particle_mass = [np.average(item[item > 0]) for item in s.gas['mass_at_ejection'][s.gas['num_recycled'] > -1]]
 
 
 bins = np.logspace(-1, 6, 15)
