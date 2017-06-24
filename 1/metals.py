@@ -1,6 +1,7 @@
 import pygad as pg
 import matplotlib.pyplot as plt
 import numpy as np
+from copy import copy
 
 filename = __file__
 
@@ -8,7 +9,7 @@ s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/out/snap_
 
 metals_ejection = [item[item > 0] for item in s.gas['metals_at_ejection'][s.gas['num_recycled'] > -1] / s.gas['mass_at_ejection'][s.gas['num_recycled'] > -1]]
 metals_infall = [item[item > 0] for item in s.gas['metals_at_infall'][s.gas['num_recycled'] > -1] / s.gas['mass_at_infall'][s.gas['num_recycled'] > -1]]
-metals_infall_full = metals_infall
+metals_infall_full = copy(metals_infall)
 
 for i, temp in enumerate(metals_ejection):
     if len(temp) < len(metals_infall[i]):
