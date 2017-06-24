@@ -6,8 +6,9 @@ filename = __file__
 
 s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/out/snap_M0977_4x_470', gas_trace='/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/gastrace_M0977_4x_disc-Uebler_070_470.dat')
 
-metals_ejection = [item[item > 0] for item in s.gas['metals_at_ejection'][s.gas['num_recycled'] > 0] / s.gas['mass_at_ejection'][s.gas['num_recycled'] > 0]]
-metals_infall = [item[item > 0] for item in s.gas['metals_at_infall'][s.gas['num_recycled'] > 0] / s.gas['mass_at_infall'][s.gas['num_recycled'] > 0]]
+metals_ejection = [item[item > 0] for item in s.gas['metals_at_ejection'][s.gas['num_recycled'] > -1] / s.gas['mass_at_ejection'][s.gas['num_recycled'] > -1]]
+metals_infall = [item[item > 0] for item in s.gas['metals_at_infall'][s.gas['num_recycled'] > -1] / s.gas['mass_at_infall'][s.gas['num_recycled'] > -1]]
+metals_infall_full = metals_infall
 
 for i, temp in enumerate(metals_ejection):
     if len(temp) < len(metals_infall[i]):
@@ -17,6 +18,7 @@ for i, temp in enumerate(metals_ejection):
 
 metals_ejection = [item for sublist in metals_ejection for item in sublist]
 metals_infall = [item for sublist in metals_infall for item in sublist]
+metals_infall_full = [item for sublist in metals_infall_full for item in sublist]
 
 fig, ax = plt.subplots(3)
 plt.tight_layout()
@@ -30,7 +32,7 @@ ax[0].plot([0, 1], [0, 1], color='r')
 ax[1].set_ylabel("count")
 ax[1].set_xlabel("z")
 ax[1].set_xlim((0, .1))
-ax[1].hist(metals_infall, bins=np.linspace(0, .1, 101), alpha=.5, label='infall')
+ax[1].hist(metals_infall_full, bins=np.linspace(0, .1, 101), alpha=.5, label='infall')
 ax[1].hist(metals_ejection, bins=np.linspace(0, .1, 101), alpha=.5, label='ejection')
 plt.legend(loc='best')
 
@@ -38,7 +40,7 @@ ax[2].set_ylabel("count")
 ax[2].set_xlabel("z")
 ax[2].set_xscale('log')
 ax[2].set_yscale('log')
-ax[2].hist(metals_infall, bins=np.logspace(-4, -1, 31), alpha=.5, label='infall')
+ax[2].hist(metals_infall_full, bins=np.logspace(-4, -1, 31), alpha=.5, label='infall')
 ax[2].hist(metals_ejection, bins=np.logspace(-4, -1, 31), alpha=.5, label='ejection')
 plt.legend(loc='best')
 
