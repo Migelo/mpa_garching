@@ -13,8 +13,6 @@ for item in data:
 
 fix, ax = plt.subplots(1)
 ax.scatter(infall, ejecta)
-#ax.set_xlim(0, max(ejecta)*1.1)
-#ax.set_ylim(0, max(ejecta)*1.1)
 ax.set_xlim(3e8, max(ejecta)*1.1)
 ax.set_ylim(3e8, max(ejecta)*1.1)
 ax.plot([0, 1e11], [0, 1e11])
