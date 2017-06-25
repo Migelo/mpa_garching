@@ -4,7 +4,8 @@ import numpy as np
 
 filename = __file__
 
-s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/out/snap_M0977_4x_470', gas_trace='/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/gastrace_M0977_4x_disc-Uebler_070_470.dat')
+type = ('disc-Uebler', 'disc', 'ball')[2]
+s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/out/snap_M0977_4x_470', gas_trace='/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/gastrace_M0977_4x_%s_070_470.dat' % (type))
 
 x = range(max(s.gas['num_recycled']) + 1)
 y = [s.gas['mass'][s.gas['num_recycled'] == i].sum() for i in range(max(s.gas['num_recycled']) + 1)]
@@ -22,5 +23,5 @@ ax[1].set_xticks(range(int(ax[1].get_xlim()[-1])))
 ax[0].bar(x, y, width=1)
 ax[1].bar(x, y, width=1)
 
-plt.savefig(filename.split("/")[-1][:-3] + ".pdf")
+plt.savefig(filename.split("/")[-1][:-3] + '_' + type + ".png", bbox_inches='tight')
 

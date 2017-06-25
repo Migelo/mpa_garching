@@ -4,7 +4,8 @@ import pygad as pg
 
 filename = __file__
 
-s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/out/snap_M0977_4x_470', gas_trace='/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/gastrace_M0977_4x_disc-Uebler_070_470.dat')
+type = ('disc-Uebler', 'disc', 'ball')[0]
+s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/out/snap_M0977_4x_470', gas_trace='/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/gastrace_M0977_4x_%s_070_470.dat' % (type))
 
 timerange = np.linspace(0, s.cosmic_time(), 26*4)
 infall, out = np.zeros(len(timerange) - 1), np.zeros(len(timerange) - 1)
@@ -47,11 +48,11 @@ out.append(0)
 fig, ax = plt.subplots(1)
 ax.grid(True)
 ax.set_xlabel("Time [Gyr]")
-ax.set_ylabel("Mass [$M_{\odot}$]")
+ax.set_ylabel("metals mass [$M_{\odot}$]")
 
 ax.step(timerange, infall, label='Infall')
 ax.step(timerange, out, label='Ejection')
 plt.legend(loc='best')
 
-plt.savefig(filename.split("/")[-1][:-3] + ".pdf", bbox_inches='tight')
+plt.savefig(filename.split("/")[-1][:-3] + '_' + type + ".pdf", bbox_inches='tight')
 

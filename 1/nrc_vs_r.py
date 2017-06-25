@@ -6,8 +6,8 @@ import utils
 
 filename = __file__
 
-"""First plot z vs r_max"""
-s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/out/snap_M0977_4x_470', gas_trace='/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/gastrace_M0977_4x_disc-Uebler_070_470.dat')
+type = ('disc-Uebler', 'disc', 'ball')[2]
+s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/out/snap_M0977_4x_470', gas_trace='/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/gastrace_M0977_4x_%s_070_470.dat' % (type))
 
 metals_ejection = [item[item > 0] for item in s.gas['metals_at_ejection'][s.gas['num_recycled'] > -1] / s.gas['mass_at_ejection'][s.gas['num_recycled'] > -1]]
 metals_infall = [item[item > 0] for item in s.gas['metals_at_infall'][s.gas['num_recycled'] > -1] / s.gas['mass_at_infall'][s.gas['num_recycled'] > -1]]
@@ -37,5 +37,5 @@ ax2.step(edges_nor, average_nor, color='r')
 ax2.set_ylabel('average number of recycles', color='r')
 ax2.tick_params('y', colors='r')
 
-plt.savefig(filename.split("/")[-1][:-3] + ".png", bbox_inches='tight')
+plt.savefig(filename.split("/")[-1][:-3] + '_' + type + ".png", bbox_inches='tight')
 

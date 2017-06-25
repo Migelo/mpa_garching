@@ -5,7 +5,8 @@ from copy import copy
 
 filename = __file__
 
-s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/out/snap_M0977_4x_470', gas_trace='/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/gastrace_M0977_4x_disc-Uebler_070_470.dat')
+type = ('disc-Uebler', 'disc', 'ball')[0]
+s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/out/snap_M0977_4x_470', gas_trace='/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/gastrace_M0977_4x_%s_070_470.dat' % (type))
 
 metals_ejection = [item[item > 0] for item in s.gas['metals_at_ejection'][s.gas['num_recycled'] > -1] / s.gas['mass_at_ejection'][s.gas['num_recycled'] > -1]]
 metals_infall = [item[item > 0] for item in s.gas['metals_at_infall'][s.gas['num_recycled'] > -1] / s.gas['mass_at_infall'][s.gas['num_recycled'] > -1]]
@@ -35,7 +36,7 @@ ax[1].set_xlabel("z")
 ax[1].set_xlim((0, .1))
 ax[1].hist(metals_infall_full, bins=np.linspace(0, .1, 101), alpha=.5, label='infall')
 ax[1].hist(metals_ejection, bins=np.linspace(0, .1, 101), alpha=.5, label='ejection')
-plt.legend(loc='best')
+leg1 = plt.legend(loc='best')
 
 ax[2].set_ylabel("count")
 ax[2].set_xlabel("z")
@@ -43,7 +44,7 @@ ax[2].set_xscale('log')
 ax[2].set_yscale('log')
 ax[2].hist(metals_infall_full, bins=np.logspace(-4, -1, 31), alpha=.5, label='infall')
 ax[2].hist(metals_ejection, bins=np.logspace(-4, -1, 31), alpha=.5, label='ejection')
-plt.legend(loc='best')
+leg2 = plt.legend(loc='best')
 
-plt.savefig(filename.split("/")[-1][:-3] + ".png", bbox_inches='tight')
+plt.savefig(filename.split("/")[-1][:-3] + '_' + type + ".png", bbox_inches='tight')
 
