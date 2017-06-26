@@ -3,12 +3,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 filename = __file__
-type = ('disc-Uebler', 'disc', 'ball')[2]
+type = ('disc-Uebler', 'disc', 'ball')[0]
 s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/out/snap_M0977_4x_470', gas_trace='/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/gastrace_M0977_4x_%s_070_470.dat' % (type))
 
 T_ejection = [item[item > 0] for item in s.gas['T_at_ejection'][s.gas['num_recycled'] > -1]]
 T_infall = [item[item > 0] for item in s.gas['T_at_infall'][s.gas['num_recycled'] > -1]]
-T_ejection_initial = [item[item > 0][0] for item in s.gas['T_at_ejection'][s.gas['num_recycled'] > 0]]
+T_ejection_initial = [item[item > 0][0] for item in s.gas['T_at_ejection'][s.gas['num_recycled'] > -1] if len(item[item > 0]) > 0]
 T_infall_initial = [item[0] for item in s.gas['T_at_infall'][s.gas['num_recycled'] > -1]]
 
 for i, temp in enumerate(T_ejection):
