@@ -16,9 +16,9 @@ def prepare_step(x, y):
         y = y.tolist()
 
     y.insert(0, y[0])
-    x.insert(0, x[0])
-    y.insert(0, 0)
-    x.append(x[-1])
-    y.append(0)
+#    x.insert(0, x[0])
+#    y.insert(0, 0)
+#    x.append(x[-1])
+#    y.append(0)
     
     return x, y
