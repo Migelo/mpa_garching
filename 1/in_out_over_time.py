@@ -6,7 +6,7 @@ import utils
 
 filename = __file__
 
-type = ('disc-Uebler', 'disc', 'ball')[2]
+type = ('disc-Uebler', 'disc', 'ball')[0]
 s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/out/snap_M0977_4x_470', gas_trace='/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/gastrace_M0977_4x_%s_070_470.dat' % (type))
 
 timerange = np.linspace(0, s.cosmic_time(), 26*4)
@@ -45,7 +45,7 @@ mass_ejection_initial, edges_init, count = stats.binned_statistic(ejection_time_
 mass_infall_reac, edges_reac, count = stats.binned_statistic(np.concatenate(infall_time_reac), np.concatenate(mass_infall_reac), statistic='sum', bins=timerange)
 mass_ejection_reac, edges_reac, count = stats.binned_statistic(np.concatenate(ejection_time_reac), np.concatenate(mass_ejection_reac), statistic='sum', bins=timerange)
 
-dt = timerange[1]
+dt = timerange[1]*1e9
 
 metals_infall /=  dt
 metals_ejection /= dt
@@ -75,17 +75,17 @@ foo, mass_infall_reac = utils.prepare_step(timerange, mass_infall_reac)
 foo, mass_ejection_reac = utils.prepare_step(timerange, mass_ejection_reac)
 
 
-fig, (ax1, ax2, ax3, ax4) = plt.subplots(4)
+fig, (ax1, ax2, ax3, ax4) = plt.subplots(4, figsize=(25, 20))
 plt.tight_layout()
 for ax in (ax1, ax2, ax3, ax4):
     ax.grid(True)
-    ax.set_xlabel("Time [Gyr]")
+    ax.set_xlabel("Time [yr]")
     ax.set_xlim((0, s.cosmic_time()))
 
-ax1.set_ylabel("mass rate [$M_{\odot}/Gyr$]")
-ax2.set_ylabel("mass rate [$M_{\odot}/Gyr$]")
-ax3.set_ylabel("metal rate [$M_{\odot}/Gyr$]")
-ax4.set_ylabel("metal rate [$M_{\odot}/Gyr$]")
+ax1.set_ylabel("mass rate [$M_{\odot}/yr$]")
+ax2.set_ylabel("mass rate [$M_{\odot}/yr$]")
+ax3.set_ylabel("metal rate [$M_{\odot}/yr$]")
+ax4.set_ylabel("metal rate [$M_{\odot}/yr$]")
 
 ax1.set_title("Mass")
 ax1.step(edges, mass_infall, label='Total infall')
