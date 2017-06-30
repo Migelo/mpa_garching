@@ -6,8 +6,8 @@ import utils
 
 filename = __file__
 
-type = ('disc-Uebler', 'disc', 'ball')[1]
-s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/out/snap_M0977_4x_470', gas_trace='/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/gastrace_M0977_4x_%s_070_470.dat' % (type))
+for type in ('disc-Uebler', 'disc', 'ball', 'ism'):
+    s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/out/snap_M0977_4x_470', gas_trace='/u/mihac/data/4x-2phase/gastrace_M0977_4x_%s_070_470.dat' % (type))
 
 r = np.array([np.sqrt(x**2 + y**2 + z**2) for x, y, z in s.gas['pos'][s.gas['num_recycled'] > -1]])
 nrc = s.gas['num_recycled'][s.gas['num_recycled'] > -1]

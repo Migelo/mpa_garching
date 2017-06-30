@@ -9,16 +9,18 @@ def time_in(s, array):
 
 
 filename = __file__
-type = ('disc-Uebler', 'disc', 'ball')[2]
-s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/out/snap_M0977_4x_470', gas_trace='/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/gastrace_M0977_4x_%s_070_470.dat' % (type))
+#type = ('disc-Uebler', 'disc', 'ball')[2]
+#s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/out/snap_M0977_4x_470', gas_trace='/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/gastrace_M0977_4x_%s_070_470.dat' % (type))
+for type in ('disc-Uebler', 'disc', 'ball', 'ism'):
+    s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/out/snap_M0977_4x_470', gas_trace='/u/mihac/data/4x-2phase/gastrace_M0977_4x_%s_070_470.dat' % (type))
 
-data = [time_in(s, item) for item in s.gas['infall_time'][s.gas['num_recycled'] > -1]]
-data = [item for sublist in data for item in sublist]
+    data = [time_in(s, item) for item in s.gas['infall_time'][s.gas['num_recycled'] > -1]]
+    data = [item for sublist in data for item in sublist]
 
-fig, ax = plt.subplots(1)
-ax.set_xlabel("infall time [Gyr]")
-ax.set_ylabel("count")
-ax.hist(data, bins=np.linspace(0, 1.5, 50))
+    fig, ax = plt.subplots(1)
+    ax.set_xlabel("infall time [Gyr]")
+    ax.set_ylabel("count")
+    ax.hist(data, bins=np.linspace(0, 1.5, 50))
 
-plt.savefig(filename.split("/")[-1][:-3] + '_' + type + ".png", bbox_inches='tight')
+    plt.savefig(filename.split("/")[-1][:-3] + '_' + type + ".png", bbox_inches='tight')
 
