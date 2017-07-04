@@ -6,33 +6,31 @@ import utils
 
 filename = __file__
 
-#type = ('disc-Uebler', 'disc', 'ball')[0]
-#s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/out/snap_M0977_4x_470', gas_trace='/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/gastrace_M0977_4x_%s_070_470.dat' % (type))
 for type in ('disc-Uebler', 'disc', 'ball', 'ism'):
-    s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/out/snap_M0977_4x_470', gas_trace='/u/mihac/data/4x-2phase/gastrace_M0977_4x_%s_070_470.dat' % (type))
+    s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/out/snap_M0977_4x_470', gas_trace='/u/mihac/data/M0977/4x-2phase/gastrace_%s' % (type))
 
-    timerange = np.linspace(0, s.cosmic_time(), 26*4)
+    timerange = np.linspace(0, s.cosmic_time(), 13 * 8)
+    rec = s.gas[s.gas['num_recycled'] > -1]
+    metals_infall = rec['metals_at_infall']
+    metals_infall_initial = metals_infall[:, 0]
+    metals_infall_reac = metals_infall[:, 1:]
+    metals_ejection = rec['metals_at_ejection'] 
+    metals_ejection_initial = metals_ejection[:, 0]
+    metals_ejection_reac = metals_ejection[:, 1:]
 
-    metals_infall = s.gas['metals_at_infall'][s.gas['num_recycled'] > -1]
-    metals_infall_initial = [item[0] for item in s.gas['metals_at_infall'][s.gas['num_recycled'] > -1]]
-    metals_infall_reac = [item[item > 0][1:] for item in s.gas['metals_at_infall'][s.gas['num_recycled'] > -1] if len(item[item > 0]) > 1]
-    metals_ejection = s.gas['metals_at_ejection'][s.gas['num_recycled'] > -1]
-    metals_ejection_initial = [item[item > 0][0] for item in s.gas['metals_at_ejection'][s.gas['num_recycled'] > -1] if len(item[item > 0]) > 0]
-    metals_ejection_reac = [item[item > 0][1:] for item in s.gas['metals_at_ejection'][s.gas['num_recycled'] > -1] if len(item[item > 0]) > 1]
-
-    mass_infall = s.gas['mass_at_infall'][s.gas['num_recycled'] > -1]
-    mass_ejection = s.gas['mass_at_ejection'][s.gas['num_recycled'] > -1]
-    mass_ejection_initial = [item[item > 0][0] for item in s.gas['mass_at_ejection'][s.gas['num_recycled'] > -1] if len(item[item > 0]) > 0]
-    mass_infall_initial = [item[0] for item in s.gas['mass_at_infall'][s.gas['num_recycled'] > -1]]
-    mass_infall_reac = [item[item > 0][1:] for item in s.gas['mass_at_infall'][s.gas['num_recycled'] > -1] if len(item[item > 0]) > 1]
-    mass_ejection_reac = [item[item > 0][1:] for item in s.gas['mass_at_ejection'][s.gas['num_recycled'] > -1] if len(item[item > 0]) > 1]
-
-    infall_time = s.gas['infall_time'][s.gas['num_recycled'] > -1]
-    ejection_time = s.gas['ejection_time'][s.gas['num_recycled'] > -1]
-    ejection_time_initial = [item[item > 0][0] for item in s.gas['ejection_time'][s.gas['num_recycled'] > -1] if len(item[item > 0]) > 0]
-    infall_time_initial = [item[0] for item in s.gas['infall_time'][s.gas['num_recycled'] > -1]]
-    infall_time_reac = [item[item > 0][1:] for item in s.gas['infall_time'][s.gas['num_recycled'] > -1] if len(item[item > 0]) > 1]
-    ejection_time_reac = [item[item > 0][1:] for item in s.gas['ejection_time'][s.gas['num_recycled'] > -1] if len(item[item > 0]) > 1]
+    mass_infall = rec['mass_at_infall']
+    mass_infall_initial = mass_infall[:, 0]
+    mass_infall_reac = mass_infall[:, 1:]
+    mass_ejection = rec['mass_at_ejection'] 
+    mass_ejection_initial = mass_ejection[:, 0]
+    mass_ejection_reac = mass_ejection[:, 1:]
+    
+    infall_time = rec['infall_time']
+    infall_time_initial = infall_time[:, 0]
+    infall_time_reac = infall_time[:, 1:]
+    ejection_time = rec['ejection_time']
+    ejection_time_initial = ejection_time[:, 0]
+    ejection_time_reac = ejection_time[:, 1:]
 
     metals_infall, edges, count = stats.binned_statistic(np.concatenate(infall_time), np.concatenate(metals_infall), statistic='sum', bins=timerange)
     metals_ejection, edges, count = stats.binned_statistic(np.concatenate(ejection_time), np.concatenate(metals_ejection), statistic='sum', bins=timerange)
