@@ -1,10 +1,18 @@
 import pygad as pg
 import matplotlib.pyplot as plt
 import numpy as np
+import utils
+import glob
+from multiprocessing import Pool
 
 filename = __file__
-for type in ('disc-Uebler', 'disc', 'ball', 'ism'):
-    s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/out/snap_M0977_4x_470', gas_trace='/u/mihac/data/4x-2phase/gastrace_M0977_4x_%s_070_470.dat' % (type))
+def plot(args):
+    halo = args[0]
+    type = args[1]
+
+    path = '/ptmp/mpa/naab/REFINED/%s/SF_X/4x-2phase/out/snap_%s_4x_???' % (halo, halo)
+    max = int(sorted(glob.glob(path))[-1][-3:])
+    s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/%s/SF_X/4x-2phase/out/snap_%s_4x_%s' % (halo, halo, max), gas_trace='/u/mihac/data/%s/4x-2phase/gastrace_%s' % (halo, type), star_form=None)
 
     mask = s.gas['ejection_time'][:,0] > '8 Gyr'
     ej_hot = s.gas['mass_at_ejection'][mask][ s.gas['T_at_ejection'][:,0][mask]>1e5 , 0 ].sum()
@@ -14,15 +22,8 @@ for type in ('disc-Uebler', 'disc', 'ball', 'ism'):
     ej_cold = s.gas['mass_at_ejection'][ s.gas['T_at_ejection']<=1e5 ].sum()
     print ej_hot / (ej_cold+ej_hot)
 
-#T_ejection = [item[item > 0] for item in s.gas['T_at_ejection'][s.gas['num_recycled'] > -1]]
-#T_infall = [item[item > 0] for item in s.gas['T_at_infall'][s.gas['num_recycled'] > -1]]
-#T_ejection_initial = [item[item > 0][0] for item in s.gas['T_at_ejection'][s.gas['num_recycled'] > -1] if len(item[item > 0]) > 0]
-#T_infall_initial = [item[0] for item in s.gas['T_at_infall'][s.gas['num_recycled'] > -1]]
-
     T_ejection = s.gas['T_at_ejection'][s.gas['num_recycled'] > -1]
     T_infall = s.gas['T_at_infall'][s.gas['num_recycled'] > -1]
-
-#plt.hist( np.log10(T_ejection.flatten()) )
 
     for i, temp in enumerate(T_ejection):
         if len(temp) < len(T_infall[i]):
@@ -39,7 +40,6 @@ for type in ('disc-Uebler', 'disc', 'ball', 'ism'):
     ax[0].set_xscale('log')
     ax[0].set_yscale('log')
     ax[0].scatter(T_infall, T_ejection, alpha=.1, edgecolor='none')
-#pg.plotting.scatter_map?
     ax[0].plot([0, 1e80], [0, 1e80], color='r')
 
     ax[1].set_ylabel("count")
@@ -60,5 +60,8 @@ for type in ('disc-Uebler', 'disc', 'ball', 'ism'):
     lgd2 = ax[2].legend(loc='best')
 
 
-    plt.savefig(filename.split("/")[-1][:-3] + '_' + type + ".png", bbox_inches='tight')
+    plt.savefig(filename.split("/")[-1][:-3] + '_' + halo + '_' + type + ".png", bbox_inches='tight')
+
+p = Pool(4)
+p.map(plot, utils.combinations)
 

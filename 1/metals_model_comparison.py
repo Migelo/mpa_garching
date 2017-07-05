@@ -1,5 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import utils
+
 
 data = np.genfromtxt('different_models.dat', dtype=[('myint','f8'),('myfloat','f8'),
 ('mystring','S5')])

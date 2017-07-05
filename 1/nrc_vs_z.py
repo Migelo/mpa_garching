@@ -3,12 +3,18 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy import stats
 import utils
+import glob
+from multiprocessing import Pool
 
 filename = __file__
 
-for type in ('disc-Uebler', 'disc', 'ball', 'ism'):
-    s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/out/snap_M0977_4x_470', gas_trace='/u/mihac/data/4x-2phase/gastrace_M0977_4x_%s_070_470.dat' % (type))
+def plot(args):
+    halo = args[0]
+    type = args[1]
 
+    path = '/ptmp/mpa/naab/REFINED/%s/SF_X/4x-2phase/out/snap_%s_4x_???' % (halo, halo)
+    max = int(sorted(glob.glob(path))[-1][-3:])
+    s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/%s/SF_X/4x-2phase/out/snap_%s_4x_%s' % (halo, halo, max), gas_trace='/u/mihac/data/%s/4x-2phase/gastrace_%s' % (halo, type), star_form=None)
 
     metals_ejection = [item[item > 0] for item in s.gas['metals_at_ejection'][s.gas['num_recycled'] > -1] / s.gas['mass_at_ejection'][s.gas['num_recycled'] > -1]]
     metals_infall = [item[item > 0] for item in s.gas['metals_at_infall'][s.gas['num_recycled'] > -1] / s.gas['mass_at_infall'][s.gas['num_recycled'] > -1]]
@@ -33,5 +39,8 @@ for type in ('disc-Uebler', 'disc', 'ball', 'ism'):
     ax.plot(edges_nor[: -1], average_nor, c='r', label='average')
     plt.legend(loc='best')
 
-    plt.savefig(filename.split("/")[-1][:-3] + '_' + type + ".png", bbox_inches='tight')
+    plt.savefig(filename.split("/")[-1][:-3] + '_' + halo + '_' + type + ".png", bbox_inches='tight')
+
+p = Pool(4)
+p.map(plot, utils.combinations)
 

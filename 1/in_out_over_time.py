@@ -2,12 +2,19 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pygad as pg
 from scipy import stats
+import glob
+from multiprocessing import Pool
 import utils
 
 filename = __file__
 
-for type in ('disc-Uebler', 'disc', 'ball', 'ism'):
-    s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/out/snap_M0977_4x_470', gas_trace='/u/mihac/data/M0977/4x-2phase/gastrace_%s' % (type))
+def plot(args):
+    halo = args[0]
+    type = args[1]
+
+    path = '/ptmp/mpa/naab/REFINED/%s/SF_X/4x-2phase/out/snap_%s_4x_???' % (halo, halo)
+    max = int(sorted(glob.glob(path))[-1][-3:])
+    s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/%s/SF_X/4x-2phase/out/snap_%s_4x_%s' % (halo, halo, max), gas_trace='/u/mihac/data/%s/4x-2phase/gastrace_%s' % (halo, type), star_form=None)
 
     timerange = np.linspace(0, s.cosmic_time(), 13 * 8)
     rec = s.gas[s.gas['num_recycled'] > -1]
@@ -107,5 +114,8 @@ for type in ('disc-Uebler', 'disc', 'ball', 'ism'):
     ax4.step(edges_reac, metals_ejection_reac, label='Subsequent ejection')
     lgd4 = ax4.legend(loc='upper left')
 
-    plt.savefig(filename.split("/")[-1][:-3] + '_' + type + ".pdf", bbox_inches='tight')
+    plt.savefig(filename.split("/")[-1][:-3] + '_' + halo + '_' + type + ".png", bbox_inches='tight')
+
+p = Pool(4)
+p.map(plot, utils.combinations)
 

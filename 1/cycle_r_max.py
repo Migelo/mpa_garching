@@ -1,15 +1,21 @@
 import pygad as pg
 import matplotlib.pyplot as plt
 import numpy as np
+import glob
+from multiprocessing import Pool
+import utils
 
 filename = __file__
-for type in ('disc-Uebler', 'disc', 'ball', 'ism'):
-    s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/out/snap_M0977_4x_470', gas_trace='/u/mihac/data/4x-2phase/gastrace_M0977_4x_%s_070_470.dat' % (type))
-#s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/out/snap_M0977_4x_470', gas_trace='/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/gastrace_M0977_4x_%s_070_470.dat' % (type))
+def plot(args):
+    halo = args[0]
+    type = args[1]
+
+    path = '/ptmp/mpa/naab/REFINED/%s/SF_X/4x-2phase/out/snap_%s_4x_???' % (halo, halo)
+    max = int(sorted(glob.glob(path))[-1][-3:])
+    s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/%s/SF_X/4x-2phase/out/snap_%s_4x_%s' % (halo, halo, max), gas_trace='/u/mihac/data/%s/4x-2phase/gastrace_%s' % (halo, type), star_form=None)
 
     cycle_r_max = [item[item > 0] for item in s.gas['cycle_r_max'][s.gas['num_recycled'] > -1]]
     particle_mass = [np.average(item[item > 0]) for item in s.gas['mass_at_ejection'][s.gas['num_recycled'] > -1]]
-
     bins = np.logspace(-1, 6, 15)
     mass_in_bins = np.zeros(len(bins) - 1)
 
@@ -46,5 +52,8 @@ for type in ('disc-Uebler', 'disc', 'ball', 'ism'):
     ay.hist(cycle_r_max, bins=np.linspace(min(cycle_r_max)*.9, np.median(cycle_r_max)*4, 25))
     plt.tight_layout()
 
-    plt.savefig(filename.split("/")[-1][:-3] + '_' + type + ".png", bbox_inches='tight')
+    plt.savefig(filename.split("/")[-1][:-3] + '_' + halo + '_' + type + ".png", bbox_inches='tight')
+
+p = Pool(4)
+p.map(plot, utils.combinations)
 

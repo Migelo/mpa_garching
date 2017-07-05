@@ -8,8 +8,8 @@ import matplotlib.mlab as mlab
 
 filename = __file__
 
-su, hu, gu = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/out/snap_M0977_4x_470', gas_trace='/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/gastrace_M0977_4x_disc-Uebler_070_470.dat')
-sb, hb, gb = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/out/snap_M0977_4x_470', gas_trace='/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/gastrace_M0977_4x_ball_070_470.dat')
+su, hu, gu = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/out/snap_M0977_4x_470', gas_trace='/u/mihac/data/M0977/4x-2phase/gastrace_ism', star_form=None)
+sb, hb, gb = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/M0977/SF_X/4x-2phase/out/snap_M0977_4x_470', gas_trace='/u/mihac/data/M0977/4x-2phase/gastrace_ball', star_form=None)
 
 ball_IDs = set(sb.gas['ID'][sb.gas['num_recycled'] > -1])
 disk_IDs = set(su.gas['ID'][su.gas['num_recycled'] > -1])
@@ -32,7 +32,7 @@ count_d, edges_d, count = stats.binned_statistic(disk_z_1st_infall, range(len(ha
 normalisation = .1/float(max(count_d))
 count_d = np.array(count_d).astype(float) * normalisation 
 
-disk_infall_avg, edges_h, count = stats.binned_statistic(halo_z_1st_infall, disk_z_1st_infall, statistic='median', bins=np.logspace(-4, -1, 30))
+disk_infall_avg, edges_h, count = stats.binned_statistic(halo_z_1st_infall, disk_z_1st_infall, statistic='mean', bins=np.logspace(-4, -1, 30))
 # count_h = list(count_h)
 # count_d = list(count_d)
 # count_h.insert(0, count_h[0])
@@ -50,7 +50,7 @@ ax.set_aspect('equal', adjustable='box')
 ax.grid(True)
 ax.scatter(halo_z_1st_infall, disk_z_1st_infall)
 ax.set_xlabel('z infall ball')
-ax.set_ylabel('z infall disk Uebler')
+ax.set_ylabel('z infall ism')
 ax.set_xlim((1e-4, 1e-1))
 ax.set_ylim((1e-4, 1e-1))
 ax.set_xscale('log')
