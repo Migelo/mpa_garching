@@ -9,12 +9,11 @@ import utils
 filename = __file__
 
 def plot(args):
-    halo = args[0]
-    type = args[1]
+    halo, definition = args
 
     path = '/ptmp/mpa/naab/REFINED/%s/SF_X/4x-2phase/out/snap_%s_4x_???' % (halo, halo)
     max = int(sorted(glob.glob(path))[-1][-3:])
-    s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/%s/SF_X/4x-2phase/out/snap_%s_4x_%s' % (halo, halo, max), gas_trace='/u/mihac/data/%s/4x-2phase/gastrace_%s' % (halo, type), star_form=None)
+    s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/%s/SF_X/4x-2phase/out/snap_%s_4x_%s' % (halo, halo, max), gas_trace='/u/mihac/data/%s/4x-2phase/gastrace_%s' % (halo, definition), star_form=None)
 
     timerange = np.linspace(0, s.cosmic_time(), 13 * 8)
     rec = s.gas[s.gas['num_recycled'] > -1]
@@ -68,18 +67,18 @@ def plot(args):
     mass_ejection_reac /= dt
 
 
-    edges, metals_infall = utils.prepare_step(edges, metals_infall)
-    foo, metals_ejection = utils.prepare_step(timerange, metals_ejection)
-    edges_init, metals_infall_initial = utils.prepare_step(edges_init, metals_infall_initial)
-    foo, metals_ejection_initial = utils.prepare_step(timerange, metals_ejection_initial)
-    edges_reac, metals_infall_reac = utils.prepare_step(edges_reac, metals_infall_reac)
-    foo, metals_ejection_reac = utils.prepare_step(timerange, metals_ejection_reac)
-    foo, mass_infall = utils.prepare_step(timerange, mass_infall)
-    foo, mass_ejection = utils.prepare_step(timerange, mass_ejection)
-    foo, mass_infall_initial = utils.prepare_step(timerange, mass_infall_initial)
-    foo, mass_ejection_initial = utils.prepare_step(timerange, mass_ejection_initial)
-    foo, mass_infall_reac = utils.prepare_step(timerange, mass_infall_reac)
-    foo, mass_ejection_reac = utils.prepare_step(timerange, mass_ejection_reac)
+    metals_infall = utils.prepare_step(metals_infall)
+    metals_ejection = utils.prepare_step(metals_ejection)
+    metals_infall_initial = utils.prepare_step(metals_infall_initial)
+    metals_ejection_initial = utils.prepare_step(metals_ejection_initial)
+    metals_infall_reac = utils.prepare_step(metals_infall_reac)
+    metals_ejection_reac = utils.prepare_step(metals_ejection_reac)
+    mass_infall = utils.prepare_step(mass_infall)
+    mass_ejection = utils.prepare_step(mass_ejection)
+    mass_infall_initial = utils.prepare_step(mass_infall_initial)
+    mass_ejection_initial = utils.prepare_step(mass_ejection_initial)
+    mass_infall_reac = utils.prepare_step(mass_infall_reac)
+    mass_ejection_reac = utils.prepare_step(mass_ejection_reac)
 
 
     fig, (ax1, ax2, ax3, ax4) = plt.subplots(4, figsize=(25, 20))
@@ -114,7 +113,7 @@ def plot(args):
     ax4.step(edges_reac, metals_ejection_reac, label='Subsequent ejection')
     lgd4 = ax4.legend(loc='upper left')
 
-    plt.savefig(filename.split("/")[-1][:-3] + '_' + halo + '_' + type + ".png", bbox_inches='tight')
+    plt.savefig(filename.split("/")[-1][:-3] + '_' + halo + '_' + definition + ".png", bbox_inches='tight')
 
 p = Pool(4)
 p.map(plot, utils.combinations)
