@@ -11,7 +11,7 @@ filename = __file__
 def plot(args):
     halo = args[0]
     definition = args[1]
-
+    print args
     path = '/ptmp/mpa/naab/REFINED/%s/SF_X/4x-2phase/out/snap_%s_4x_???' % (halo, halo)
     max = int(sorted(glob.glob(path))[-1][-3:])
     s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/%s/SF_X/4x-2phase/out/snap_%s_4x_%s' % (halo, halo, max), gas_trace='/u/mihac/data/%s/4x-2phase/gastrace_%s' % (halo, definition), star_form=None)
@@ -26,8 +26,8 @@ def plot(args):
         for line in particle:
             extended_nor.append(number_of_recycles[i])
 
-    average_nor, edges_nor, count_nor = stats.binned_statistic(np.concatenate(cycle_r_max), extended_nor, statistic='mean', bins=np.linspace(0, 40, 41))
-    average_z, edges, count = stats.binned_statistic(np.concatenate(cycle_r_max), np.concatenate(metals_ejection), statistic='mean', bins=np.linspace(0, 40, 41))
+    average_nor, edges_nor, count_nor = stats.binned_statistic(np.concatenate(cycle_r_max), extended_nor, statistic='mean', bins=np.linspace(0, 200, 201))
+    average_z, edges, count = stats.binned_statistic(np.concatenate(cycle_r_max), np.concatenate(metals_ejection), statistic='mean', bins=np.linspace(0, 200, 201))
 
     average_z = utils.prepare_step(average_z)
     average_nor = utils.prepare_step(average_nor)
