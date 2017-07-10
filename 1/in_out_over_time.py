@@ -113,7 +113,8 @@ def plot(args):
     ax4.step(edges_reac, metals_ejection_reac, label='Subsequent ejection')
     lgd4 = ax4.legend(loc='upper left')
 
-    plt.savefig(filename.split("/")[-1][:-3] + '_' + halo + '_' + definition + ".png", bbox_inches='tight')
+    utils.mkdir('./%s' % (halo))
+    plt.savefig('./%s/' % (halo) + ("/")[-1][:-3] + '_' + halo + '_' + definition + ".png", bbox_inches='tight')
 
 p = Pool(4)
 p.map(plot, utils.combinations)

@@ -8,7 +8,8 @@ from scipy import stats
 import utils
 
 filename = __file__
-def plot(args):
+
+def cycle_r_max(args):
     halo = args[0]
     definition = args[1]
 
@@ -18,7 +19,6 @@ def plot(args):
 
     cycle_r_max = s.gas['cycle_r_max'] #[s.gas['num_recycled'] > -1]
     particle_mass = s.gas['mass_at_ejection'] #[s.gas['num_recycled'] > -1]
-    #mask = np.max(s.gas['cycle_r_max'][s.gas['num_recycled'] > -1], axis=1) > '100 kpc'
     mask = np.max(s.gas['cycle_r_max'], axis=1) > '100 kpc'
     cycle_r_max_lim = cycle_r_max[mask]
     ID_mask = pg.IDMask(s.gas['ID'][mask])
