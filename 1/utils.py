@@ -1,5 +1,6 @@
 import numpy as np
 import os
+from random import shuffle
 
 def prepare_step(y):
     '''
@@ -25,7 +26,7 @@ combinations = []
 for halo in halos:
     for type in types:
         combinations.append((halo, type))
-
+shuffle(combinations)
 
 def save(path, filename):
     '''
