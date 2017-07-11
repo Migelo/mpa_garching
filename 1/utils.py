@@ -18,15 +18,16 @@ def prepare_step(y):
 
 '''Generate combinations of halos with all tracing types.'''
 halos =  ('M0125', 'M0204', 'M0290', 'M0616', 'M0858', 'M0977', 'M1196', 'M1859', 'M4349',
-         'M0175', 'M0408', 'M0664', 'M0959', 'M1646', 'M4323', 'M6782')
+         'M0175', 'M0408', 'M0664', 'M0959', 'M1646', 'M4323', 'M6782')[::-1]
 #halos =  ('M6782')
 #halos =  ('M1196',)
-types =  ('disc-Uebler', 'disc', 'ball', 'ism')
+#types =  ('disc-Uebler', 'disc', 'ball', 'ism')
+types =  ('ism', )
 combinations = []
 for halo in halos:
     for type in types:
         combinations.append((halo, type))
-shuffle(combinations)
+# shuffle(combinations)
 
 def save(path, filename):
     '''
