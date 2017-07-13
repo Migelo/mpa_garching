@@ -17,8 +17,11 @@ def plot(args):
     s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/%s/SF_X/4x-2phase/out/snap_%s_4x_%s' % (halo, halo, max), gas_trace='/u/mihac/data/%s/4x-2phase/gastrace_%s' % (halo, definition), star_form=None)
     
     f, ax = plt.subplots(3, 2, figsize=(20, 12))
+    plt.subplots_adjust(top=0.93)
     f.suptitle('%s - %s' % (halo, definition), fontsize=20)
     
+    x_limits = []
+    y_limits = []
     for axes in ax.flatten():
         axes.grid(True)
 
@@ -53,12 +56,33 @@ def plot(args):
     pg.plotting.profile(s.gas[np.max(s.gas['T_at_ejection'] > 0, axis=1)], '200 kpc', 'metallicity', ax=ax[2,1], label='recycled', dens=False)
     ax[2,1].set_ylim((1e-1, 1e3))
 
-    f.tight_layout()
-    plt.subplots_adjust(top=0.93)
 
+    for axes in ax.flatten():
+        axes.grid(True)
+        x_limits.append(axes.get_xlim())
+        y_limits.append(axes.get_ylim())
+
+    x_limits = np.array(x_limits)
+    y_limits = np.array(y_limits)
+    x_limits = np.min(x_limits[:, 0]), np.max(x_limits[:, 1])
+    y_limits = np.min(y_limits[:, 0]), np.max(y_limits[:, 1])
     
+    if args[2] == '0.0':
+        return (x_limits, y_limits)
+    for axes in ax.flatten():
+        axes.set_xlim(args[2][0])
+        axes.set_ylim(args[2][1])
+
     plt.savefig(filename.split("/")[-1][:-3] + '_' + halo + '_' + definition + ".pdf", bbox_inches='tight')
-    
-p = Pool(8)
-p.map(plot, utils.combinations)
+p = Pool(4)
+limits = p.map(plot, np.column_stack((utils.combinations, np.zeros(len(utils.combinations)))))
+x_lim = np.array([x[0] for x in limits])
+y_lim = np.array([x[1] for x in limits])
+
+limits = [[x_lim[:,0].min(), x_lim[:,1].max()], [y_lim[:,0].min(), y_lim[:,1].max()]]
+arguments = []
+for item in utils.combinations:
+    item = list(item)
+    arguments.append(item + [limits])
+p.map(plot, arguments)
 
