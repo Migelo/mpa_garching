@@ -2,6 +2,8 @@ import numpy as np
 import os
 from random import shuffle
 
+figsize = (8.268, 8.268*2**.5)
+
 def prepare_step(y):
     '''
     Prepare data for a nice step plot.
