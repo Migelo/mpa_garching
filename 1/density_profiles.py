@@ -73,7 +73,7 @@ def plot(args):
         axes.set_xlim(args[2][0])
         axes.set_ylim(args[2][1])
 
-    plt.savefig(filename.split("/")[-1][:-3] + '_' + halo + '_' + definition + ".pdf", bbox_inches='tight')
+    plt.savefig(filename.split("/")[-1][:-3] + '_' + halo + '_' + definition + ".png", bbox_inches='tight')
 p = Pool(4)
 limits = p.map(plot, np.column_stack((utils.combinations, np.zeros(len(utils.combinations)))))
 x_lim = np.array([x[0] for x in limits])
