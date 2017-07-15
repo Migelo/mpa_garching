@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
+import matplotlib as mpl
 import pygad as pg
 from scipy import stats
 import glob
@@ -50,7 +51,7 @@ def plot(args):
 
     colors = s.gas[id_mask]['metallicity']/pg.solar.Z()
     norm = mpl.colors.LogNorm(vmin=colors.min(), vmax=colors.max())
-    scalarMap = cm.ScalarMappable(norm=norm, cmap='viridis')
+    scalarMap = cm.ScalarMappable(norm=norm, cmap='seismic')
     
 #    Z = [[0,0],[0,0]]
 #    levels = [scalarMap.to_rgba(x) for x in colors[:10]]
@@ -73,7 +74,7 @@ def plot(args):
 
     plt.savefig(filename.split("/")[-1][:-3] + '_' + halo + '_' + definition + ".png", bbox_inches='tight')
 
-p = Pool(4)
+p = Pool(1)
 p.map(plot, utils.combinations)
 
 

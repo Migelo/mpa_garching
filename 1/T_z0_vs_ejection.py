@@ -34,7 +34,6 @@ def plot(args):
     ax.set_yscale('log')
     ax.set_xlabel("T at z=0")
     ax.set_ylabel("T at last ejection")
-    f.tight_layout()
     ax.scatter(cgm['temp'][np.max(cgm['T_at_ejection'], axis=-1) > 0], last_T, alpha=.2, edgecolor='none')
 
     ax1 = ax.twinx()
