@@ -60,12 +60,12 @@ def plot(args):
         ax[0].set_title('All data')
     for i, item in enumerate(to_plot):
         colorVal = scalarMap.to_rgba(colors[i])
-        ax[0].plot(item[:, 0], item[:, 1])
+        ax[0].plot(item[:, 0], item[:, 1], color=colorVal)
         
-        ax[1].set_title('Every 500th line')
-    for i, item in enumerate(to_plot[::500]):
-        colorVal = scalarMap.to_rgba(colors[500*i])
-        ax[1].plot(item[:, 0], item[:, 1])
+        ax[1].set_title('Every 1000th line')
+    for i, item in enumerate(to_plot[::1000]):
+        colorVal = scalarMap.to_rgba(colors[1000*i])
+        ax[1].plot(item[:, 0], item[:, 1], color=colorVal)
 
     f.tight_layout()
     plt.subplots_adjust(top=0.88)
