@@ -21,16 +21,17 @@ def plot(args):
     
     f, ax = plt.subplots(2, figsize=utils.figsize)
     pg.plotting.scatter_map(s_masked['cycle_r_max'].flatten(),
-        s_masked['T_at_ejection'].flatten(),
-        extent=[[0, 200], [1e3, 2e4]], logscale=True, ax=ax[0])
+        np.log10(s_masked['T_at_ejection'].flatten()),
+        extent=[[0, 2000], [3, 8]], logscale=True, ax=ax[0],
+        vlim=[1e0, 1e2])
     ax[0].set_xlabel('cycle $r_{max}$ [kpc]')
-    ax[0].set_ylabel('T at ejection [K]')
+    ax[0].set_ylabel(r'$log_{10}(T\ at\ ejection)$ [K]')
     
-    pg.plotting.scatter_map(s_masked['cycle_r_max'].flatten(),
-        s_masked['T_at_ejection'].flatten(),
-        extent=[[0, 2000], [3e3, 2e7]], logscale=True, ax=ax[1])
-    ax[1].set_xlabel('cycle $r_{max}$ [kpc]')
-    ax[1].set_ylabel('T at ejection [K]')
+    pg.plotting.scatter_map(np.log10(s_masked['cycle_r_max'].flatten()),
+        np.log10(s_masked['T_at_ejection'].flatten()),
+        extent=[[0.5, 3.5], [3, 8]], logscale=True, ax=ax[1])
+    ax[1].set_xlabel(r'$log_{10}\left(cycle\ r_{max}\right)$ [kpc]')
+    ax[1].set_ylabel(r'$log_{10}\left(T\ at\ ejection\right)$ [K]')
     
     f.tight_layout()
     plt.subplots_adjust(top=0.93)
@@ -38,6 +39,6 @@ def plot(args):
     
     plt.savefig(filename.split("/")[-1][:-3] + '_' + halo + '_' + definition + ".png", bbox_inches='tight')
 
-p = Pool(4)
+p = Pool(8)
 p.map(plot, utils.combinations)
 
