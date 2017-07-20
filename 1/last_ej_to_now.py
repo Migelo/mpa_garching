@@ -1,4 +1,5 @@
 import numpy as np
+import numpy.random as rand
 import matplotlib.pyplot as plt
 from matplotlib import cm
 import matplotlib as mpl
@@ -26,8 +27,6 @@ def plot(args):
     id_mask = pg.IDMask(last_ids)
     s_idx = np.argsort(last_ids)
 
-    # iterate over all snapshots and get the cosmic time and
-    # IDs of all gas particles
     T_id = []
     t = []
     snaps = sorted(glob.glob(path))
@@ -60,12 +59,14 @@ def plot(args):
         ax[0].set_title('All data')
     for i, item in enumerate(to_plot):
         colorVal = scalarMap.to_rgba(colors[i])
-        ax[0].plot(item[:, 0], item[:, 1], color=colorVal)
+        ax[0].plot(item[:, 0], item[:, 1], color=colorVal, alpha=.1)
         
-        ax[1].set_title('Every 1000th line')
-    for i, item in enumerate(to_plot[::1000]):
-        colorVal = scalarMap.to_rgba(colors[1000*i])
-        ax[1].plot(item[:, 0], item[:, 1], color=colorVal)
+        line_number = 30
+        ax[1].set_title('%s random lines from upper plot' % line_number)
+        rand_indices = rand.randint(0, len(to_plot)-1, line_number)
+    for i in rand_indices:
+        colorVal = scalarMap.to_rgba(colors[i])
+        ax[1].plot(to_plot[i][:, 0], to_plot[i][:, 1], color=colorVal)
 
     f.tight_layout()
     plt.subplots_adjust(top=0.88)
@@ -75,5 +76,4 @@ def plot(args):
 
 p = Pool(4)
 p.map(plot, utils.combinations)
-
 
