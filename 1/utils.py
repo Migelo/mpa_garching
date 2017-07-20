@@ -2,7 +2,7 @@ import numpy as np
 import os
 from random import shuffle
 
-figsize = (8.268, 8.268*2**.5)
+figsize = np.array((8.268, 8.268*2**.5))
 
 def prepare_step(y):
     '''

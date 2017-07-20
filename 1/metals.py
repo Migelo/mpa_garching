@@ -40,7 +40,6 @@ def plot(args):
     count_ejection, edges, foo = stats.binned_statistic(metals_ejection,
         metals_infall, statistic='count', bins=np.logspace(-4, -1, 31))
 
-#    normalisation = .1/float(np.max(count_infall))
     count_infall = np.array(count_infall).astype(float) * 1e-1 / np.max(count_infall)
     count_ejection = np.array(count_ejection).astype(float) * 1e-1 / np.max(count_ejection)
 
@@ -69,9 +68,6 @@ def plot(args):
     ax1.set_ylim((1e-4, 1e0))
     ax1.set_xlabel("z at infall")
     ax1.set_ylabel("z at ejection")
-    #ax1.bar(edges[:-1], count_infall, width=np.diff(edges), alpha=.3)
-    #ax1.barh(edges[:-1], count_ejection, height=np.diff(edges), alpha=.3)
-    #ax1.scatter(metals_infall, metals_ejection, alpha=.1, edgecolor=None)
 
     ax2.set_ylabel("count")
     ax2.set_xlabel("z")
