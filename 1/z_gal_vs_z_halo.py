@@ -25,18 +25,19 @@ disk_z = tracked_disk.gas['metals_at_infall'] / tracked_disk.gas['mass_at_infall
 halo_z_1st_infall = [x[0] for x in halo_z]
 disk_z_1st_infall = [x[0] for x in disk_z]
 
-count_h, edges_h, count = stats.binned_statistic(halo_z_1st_infall, range(len(halo_z_1st_infall)), statistic='count', bins=np.logspace(-4, -1, 30))
+count_h, edges_h, count = stats.binned_statistic(halo_z_1st_infall,
+    range(len(halo_z_1st_infall)), statistic='count',
+    bins=np.logspace(-4, -1, 30))
 normalisation = .1/float(max(count_h))
 count_h = np.array(count_h).astype(float) * normalisation 
-count_d, edges_d, count = stats.binned_statistic(disk_z_1st_infall, range(len(halo_z_1st_infall)), statistic='count', bins=np.logspace(-4, -1, 30))
+count_d, edges_d, count = stats.binned_statistic(disk_z_1st_infall,
+    range(len(halo_z_1st_infall)), statistic='count',
+    bins=np.logspace(-4, -1, 30))
 normalisation = .1/float(max(count_d))
 count_d = np.array(count_d).astype(float) * normalisation 
 
-disk_infall_avg, edges_h, count = stats.binned_statistic(halo_z_1st_infall, disk_z_1st_infall, statistic='mean', bins=np.logspace(-4, -1, 30))
-# count_h = list(count_h)
-# count_d = list(count_d)
-# count_h.insert(0, count_h[0])
-# count_d.insert(0, count_d[0])
+disk_infall_avg, edges_h, count = stats.binned_statistic(halo_z_1st_infall,
+    disk_z_1st_infall, statistic='mean', bins=np.logspace(-4, -1, 30))
 
 n = 50
 x = np.logspace(-4, -1, n)

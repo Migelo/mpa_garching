@@ -11,12 +11,12 @@ s1, h1, g1 = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/M1196/SF_X/4x-2phase/out/sn
 
 R200_frac, Tcrit, rhocrit = [.15, '2e4 K', '1e-2 u/cm**3']
 R200, M200 = pg.analysis.virial_info(s1)
-s1_mass = s1.gas[pg.BallMask(R200_frac*R200) & \
+s1_ism = s1.gas[pg.BallMask(R200_frac*R200) & \
                        pg.ExprMask('(temp < "%s") & (rho > "%s")' % (Tcrit,rhocrit)) ]
-s1_mass = s1_mass['mass'].sum()
-s_mass = s.gas[pg.BallMask(R200_frac*R200) & \
+s1_mass = s1_ism['mass'].sum()
+s_ism = s.gas[pg.BallMask(R200_frac*R200) & \
                        pg.ExprMask('(temp < "%s") & (rho > "%s")' % (Tcrit,rhocrit)) ]
-s_mass = s_mass['mass'].sum()
+s_mass = s_ism['mass'].sum()
 
-print (g.stars['mass'].sum() - g1.stars['mass'].sum()) / (s.gas['mass_at_infall'].sum() - s.gas['mass_at_ejection'].sum() + s1_mass - s_mass) 
+print (g.stars['mass'].sum() - g1.stars['mass'].sum()) / (s.gas['mass_at_infall'].sum() - s.gas['mass_at_ejection'].sum()) 
 

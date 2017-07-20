@@ -20,14 +20,14 @@ def prepare_step(y):
 
 '''Generate combinations of halos with all tracing types.'''
 halos = ('M0408', 'M0501', 'M0616', 'M0664', 'M0858', 'M0959',
-    'M0977', 'M1192', 'M1196', 'M1646', 'M1859', 'M2283')
+    'M0977', 'M1192', 'M1196', 'M1646', 'M1859', 'M2283')[::-1]
 #types =  ('disc-Uebler', 'disc', 'ball', 'ism')
 types =  ('ism', )
 combinations = []
 for halo in halos:
     for type in types:
         combinations.append((halo, type))
-shuffle(combinations)
+#shuffle(combinations)
 
 def save(path, filename):
     '''
@@ -45,3 +45,7 @@ def save(path, filename):
 
 def finite(data):
     return data[np.isfinite(data)]
+
+def norm_hist(data, maximum):
+    return np.array(data) * float(maximum) / max(data) 
+    

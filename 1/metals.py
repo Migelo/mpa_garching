@@ -45,7 +45,7 @@ def plot(args):
     count_ejection = np.array(count_ejection).astype(float) * 1e-1 / np.max(count_ejection)
 
 
-    f = plt.figure(figsize=(8.268, 8.268*2**.5))
+    f = plt.figure(figsize=utils.figsize)
     gs = gridspec.GridSpec(4, 1)
     ax1 = plt.subplot(gs[:2, 0])
     ax2 = plt.subplot(gs[2, 0])
