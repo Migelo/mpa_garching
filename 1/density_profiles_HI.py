@@ -17,7 +17,7 @@ bins = np.arange(0, 200, 5)
 profiles = np.zeros(3, dtype=object)
 HI_profiles = np.zeros(3, dtype=object)
 
-for i, args in enumerate(utils.combinations):
+for i, args in enumerate(utils.combinations[:3]):
     halo = args[0]
     definition = 'ism'
 
@@ -29,19 +29,19 @@ for i, args in enumerate(utils.combinations):
     m_rec = np.max(s.gas['T_at_ejection'] > 0, axis=1)
     
     if i == 0:
-        profiles[0] = pg.analysis.profile_dens(s.gas, 'rho', r_edges=bins)
-        profiles[1] = pg.analysis.profile_dens(s.gas[m_rec], 'rho', r_edges=bins)
-        profiles[2] = pg.analysis.profile_dens(s.gas[m_nrec], 'rho', r_edges=bins)
-        HI_profiles[0] = pg.analysis.profile_dens(s.gas, 'HI/dV', r_edges=bins)
-        HI_profiles[1] = pg.analysis.profile_dens(s.gas[m_rec], 'HI/dV', r_edges=bins)
-        HI_profiles[2] = pg.analysis.profile_dens(s.gas[m_nrec], 'HI/dV', r_edges=bins)
+        profiles[0] = pg.analysis.profile_dens(s.gas, 'mass', r_edges=bins)
+        profiles[1] = pg.analysis.profile_dens(s.gas[m_rec], 'mass', r_edges=bins)
+        profiles[2] = pg.analysis.profile_dens(s.gas[m_nrec], 'mass', r_edges=bins)
+        HI_profiles[0] = pg.analysis.profile_dens(s.gas, 'HI', r_edges=bins)
+        HI_profiles[1] = pg.analysis.profile_dens(s.gas[m_rec], 'HI', r_edges=bins)
+        HI_profiles[2] = pg.analysis.profile_dens(s.gas[m_nrec], 'HI', r_edges=bins)
     else:
-        profiles[0] = np.column_stack((profiles[0], pg.analysis.profile_dens(s.gas, 'rho', r_edges=bins)))
-        profiles[1] = np.column_stack((profiles[1], pg.analysis.profile_dens(s.gas[m_rec], 'rho', r_edges=bins)))
-        profiles[2] = np.column_stack((profiles[2], pg.analysis.profile_dens(s.gas[m_nrec], 'rho', r_edges=bins)))
-        HI_profiles[0] = np.column_stack((HI_profiles[0], pg.analysis.profile_dens(s.gas, 'HI/dV', r_edges=bins)))
-        HI_profiles[1] = np.column_stack((HI_profiles[1], pg.analysis.profile_dens(s.gas[m_rec], 'HI/dV', r_edges=bins)))
-        HI_profiles[2] = np.column_stack((HI_profiles[2], pg.analysis.profile_dens(s.gas[m_nrec], 'HI/dV', r_edges=bins)))
+        profiles[0] = np.column_stack((profiles[0], pg.analysis.profile_dens(s.gas, 'mass', r_edges=bins)))
+        profiles[1] = np.column_stack((profiles[1], pg.analysis.profile_dens(s.gas[m_rec], 'mass', r_edges=bins)))
+        profiles[2] = np.column_stack((profiles[2], pg.analysis.profile_dens(s.gas[m_nrec], 'mass', r_edges=bins)))
+        HI_profiles[0] = np.column_stack((HI_profiles[0], pg.analysis.profile_dens(s.gas, 'HI', r_edges=bins)))
+        HI_profiles[1] = np.column_stack((HI_profiles[1], pg.analysis.profile_dens(s.gas[m_rec], 'HI', r_edges=bins)))
+        HI_profiles[2] = np.column_stack((HI_profiles[2], pg.analysis.profile_dens(s.gas[m_nrec], 'HI', r_edges=bins)))
  
 f = plt.figure(figsize=utils.figsize)
 gs = gridspec.GridSpec(2, 2)
@@ -55,8 +55,8 @@ ax3.set_ylabel(r'$\rho_{accreted}/\rho_{recycled}$', fontsize=20)
 
 ax1.set_yscale('log')
 ax2.set_yscale('log')
-ax1.set_ylim((1e-2, 1e8))
-ax2.set_ylim((1e-5, 1e8))
+ax1.set_ylim((1e2, 1e7))
+ax2.set_ylim((1e-3, 1e7))
 
 for a in [ax1, ax2, ax3, ax4]:
     a.set_yscale('log')
