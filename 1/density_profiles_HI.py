@@ -17,7 +17,7 @@ bins = np.arange(0, 200, 5)
 profiles = np.zeros(3, dtype=object)
 HI_profiles = np.zeros(3, dtype=object)
 
-for i, args in enumerate(utils.combinations[:3]):
+for i, args in enumerate(utils.combinations):
     halo = args[0]
     definition = 'ism'
 
