@@ -2,10 +2,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import pygad as pg
+import pygad.plotting
 from scipy import stats
 import glob
 from multiprocessing import Pool
 import utils
+
+plt.style.use('general')
 
 filename = __file__
 
@@ -22,43 +25,47 @@ def plot(args):
     ism = pg.BallMask(R200_frac*R200) & \
                            pg.ExprMask('(temp < "%s") & (rho > "%s")' % (Tcrit, rhocrit))
     cgm = h.gas[~ism]
+    mask = np.max(cgm['T_at_ejection'], axis=-1) > 0
     last_T = np.array([x[x>0][-1] for x in cgm['T_at_ejection'] if len(x[x>0])>0])
+    
+    bins = np.arange(3, 8.1, .1)
+    x_h, edges, _ = stats.binned_statistic(np.log10(last_T),
+        np.log10(cgm[mask]['mass']), bins=bins, statistic='sum')
+    y_h, _, _ = stats.binned_statistic(np.log10(cgm['temp'][mask]),
+        np.log10(cgm[mask]['mass']), bins=bins, statistic='sum')
 
-    x_h, edges = np.histogram(last_T, bins=np.logspace(3, 9, 31))
-    y_h, _ = np.histogram(cgm['temp'][np.max(cgm['T_at_ejection'], axis=-1) > 0], bins=np.logspace(3, 9, 31))
+    f = plt.figure(figsize=(15, 15))
+    gs = gridspec.GridSpec(4, 4)
+    ax1 = plt.subplot(gs[:-1, 1:])
+    ax2 = plt.subplot(gs[:-1, 0])
+    ax3 = plt.subplot(gs[-1, 1:])
+    
+    pg.plotting.scatter_map(np.log10(cgm['temp'][mask]),
+        np.log10(last_T), s=cgm[mask], qty='mass',
+        logscale=True, ax=ax1, bins=[bins, bins],
+        extent=[[3, 8], [3, 8]])
+    ax1.grid(False)
+    ax1.set_xlabel(r"$log_{10}(T_{z=0})$")
+    ax1.set_ylabel(r"$log_{10}(T_{last\ ej})$")
+    limits = ax1.get_xlim()
 
-    f = plt.figure(figsize=utils.figsize[::-1] * 1.3)
-    gs = gridspec.GridSpec(3, 3)
-    ax1 = plt.subplot(gs[:2, 1:])
-    ax2 = plt.subplot(gs[:2, 0])
-    ax3 = plt.subplot(gs[2, 1:])
-
-    ax1.grid(True)
-    ax1.set_xlim((1e3, 1e9))
-    ax1.set_ylim((1e3, 1e9))
-    ax1.set_xscale('log')
-    ax1.set_yscale('log')
-    ax1.set_xlabel("T at z=0")
-    ax1.set_ylabel("T at last ejection")
-    ax1.scatter(cgm['temp'][np.max(cgm['T_at_ejection'], axis=-1) > 0], last_T, alpha=.2, edgecolor='none')
-
-    ax3.set_ylabel('count')
-    ax3.set_xlim((1e3, 1e9))
-    ax3.set_xscale('log')
+    ax3.set_ylabel(r'$log_{10}(mass\ [M_\odot])$')
     ax3.bar(edges[:-1], x_h, width=np.diff(edges))
     ax3.set_ylim(ax3.get_ylim()[::-1])
+    ax3.set_xlim(limits)
 
-    ax2.set_xlabel('count')
-    ax2.set_yscale('log')
+    ax2.set_xlabel(r'$log_{10}(mass\ [M_\odot])$')
     ax2.barh(edges[:-1], y_h, height=np.diff(edges))
     ax2.set_xlim(ax2.get_xlim()[::-1])
+    ax2.set_ylim(limits)
+    plt.setp(ax2.xaxis.get_majorticklabels(), rotation=45)
 
     f.tight_layout()
-    plt.subplots_adjust(top=0.88)
+    plt.subplots_adjust(top=0.95)
     f.suptitle('%s - %s' % (halo, definition), fontsize=20)
 
     plt.savefig(filename.split("/")[-1][:-3] + '_' + halo + '_' + definition + ".png", bbox_inches='tight')
 
-p = Pool(4)
+p = Pool(8)
 p.map(plot, utils.combinations)
 
