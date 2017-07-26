@@ -1,8 +1,9 @@
 import numpy as np
 import os
 from random import shuffle
+import math
 
-figsize = np.array((8.268, 8.268*2**.5))
+figsize = (8.268, 8.268*2**.5)
 
 def prepare_step(y):
     '''
@@ -48,4 +49,14 @@ def finite(data):
 
 def norm_hist(data, maximum):
     return np.array(data) * float(maximum) / max(data) 
-    
+
+def round_to_n(x, n):
+    " Round x to n significant figures "
+    return round(x, -int(math.floor(np.sign(x) * np.log10(abs(x)))) + n)
+
+def str_fmt(x, n=2):
+    " Format x into nice Latex rounding to n"
+    power = int(np.log10(round_to_n(x, 0)))
+    f_SF = round_to_n(x, n) * pow(10, -power)
+    return r"{}\cdot 10^{}".format(f_SF, power)
+
