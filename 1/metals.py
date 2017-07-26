@@ -21,28 +21,11 @@ def plot(args):
     max = int(sorted(glob.glob(path))[-1][-3:])
     s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/%s/SF_X/4x-2phase/out/snap_%s_4x_%s' % (halo, halo, max), gas_trace='/u/mihac/data/%s/4x-2phase/gastrace_%s' % (halo, definition), star_form=None)
 
-    metals_ejection = [item[item > 0] for item in s.gas['metals_at_ejection'][s.gas['num_recycled'] > -1] / s.gas['mass_at_ejection'][s.gas['num_recycled'] > -1]]
-    metals_infall = [item[item > 0] for item in s.gas['metals_at_infall'][s.gas['num_recycled'] > -1] / s.gas['mass_at_infall'][s.gas['num_recycled'] > -1]]
-    metals_infall_full = copy(metals_infall)
-
-    for i, temp in enumerate(metals_ejection):
-        if len(temp) < len(metals_infall[i]):
-            metals_infall[i] = metals_infall[i][:-1]
-        elif len(temp) > len(metals_infall[i]):
-            print 'hmm'
-
-    metals_ejection = [item for sublist in metals_ejection for item in sublist]
-    metals_infall = [item for sublist in metals_infall for item in sublist]
-    metals_infall_full = [item for sublist in metals_infall_full for item in sublist]
-
-    count_infall, edges, foo = stats.binned_statistic(metals_infall,
-        metals_ejection, statistic='count', bins=np.logspace(-4, -1, 31))
-    count_ejection, edges, foo = stats.binned_statistic(metals_ejection,
-        metals_infall, statistic='count', bins=np.logspace(-4, -1, 31))
-
-    count_infall = np.array(count_infall).astype(float) * 1e-1 / np.max(count_infall)
-    count_ejection = np.array(count_ejection).astype(float) * 1e-1 / np.max(count_ejection)
-
+    mask = s.gas['mass_at_ejection'] > 0
+    metallicity_at_infall = s.gas['metals_at_infall'][mask] / s.gas['mass_at_infall'][mask]
+    metallicity_at_ejection = s.gas['metals_at_ejection'][mask] / s.gas['mass_at_ejection'][mask]
+    metals_infall =  s.gas['metals_at_infall'][mask]
+    metals_ejection = s.gas['metals_at_ejection'][mask]
 
     f = plt.figure(figsize=utils.figsize)
     gs = gridspec.GridSpec(4, 1)
@@ -50,45 +33,40 @@ def plot(args):
     ax2 = plt.subplot(gs[2, 0])
     ax3 = plt.subplot(gs[3, 0])
 
-    bins, x_edge, y_edge = np.histogram2d(metals_ejection, metals_infall,
-        bins=[np.logspace(-4, 0, 61), np.logspace(-4, 0, 61)])
-    vmin, vmax = np.percentile(utils.finite(np.log10(bins.flatten())), [0, 95])
-    
-    abc = ax1.pcolormesh(x_edge, y_edge, np.log10(bins), vmin=vmin, vmax=vmax)
-    cax = inset_axes(ax1, width="70%", height="3%", loc=1)
-    cbar = f.colorbar(abc, cax=cax, orientation='horizontal')
-    cbar.set_label('$log_{10}(count)$', color='w')
-    cbar_obj = plt.getp(cbar.ax.axes, 'xticklabels')
-    plt.setp(cbar_obj, color='w')
-    
-    ax1.plot([0, 1], [0, 1], color='r')
-    ax1.set_xscale('log')
-    ax1.set_yscale('log')
-    ax1.set_xlim((1e-4, 1e0))
-    ax1.set_ylim((1e-4, 1e0))
-    ax1.set_xlabel("z at infall")
-    ax1.set_ylabel("z at ejection")
+    _, _, _, cbar = pg.plotting.scatter_map(np.log10(metallicity_at_infall),
+        np.log10(metallicity_at_ejection), qty=s.gas['mass_at_infall'][mask],
+        colors=s.gas['T_at_ejection'][mask], colors_av=s.gas['mass_at_infall'][mask],
+        logscale=True, extent=[[-4, 0], [-4, 0]], clogscale=True, clim=[10**3.2, 1e8],
+        zero_is_white=True, ax=ax1)
+    cbar_ax = cbar.ax
+    cbar_ax.set_xlabel(r'$log_{10} ( Temperature\ [K] ) $')
+    ax1.plot([-4, 0], [-4, 0], color='r')
+    ax1.set_xlim((-4, -1))
+    ax1.set_ylim((-3.5, -.5))
+    ax1.set_xlabel(r"$log_{10}(z_{at\ infall})$")
+    ax1.set_ylabel(r"$log_{10}(z_{at\ ejection})$")
 
     ax2.set_ylabel("count")
-    ax2.set_xlabel("z")
-    ax2.set_xlim((0, .1))
-    ax2.hist(metals_infall, bins=np.linspace(0, .1, 101), alpha=.5, label='infall')
-    ax2.hist(metals_ejection, bins=np.linspace(0, .1, 101), alpha=.5, label='ejection')
-    leg1 = ax2.legend(loc='best')
+    ax2.set_xlabel("metallicity")
+    ax2.set_xlim((0, .02))
+    ax2.hist(metallicity_at_infall, bins=np.linspace(0, .1, 101), alpha=.5, label='infall')
+    ax2.hist(metallicity_at_ejection, bins=np.linspace(0, .1, 101), alpha=.5, label='ejection')
+    leg1 = ax2.legend(loc='best', fontsize=14)
+    plt.setp(ax2.get_xticklabels(), rotation=45)
 
     ax3.set_ylabel("count")
-    ax3.set_xlabel("z")
+    ax3.set_xlabel("metallicity")
     ax3.set_xscale('log')
     ax3.set_yscale('log')
-    ax3.hist(metals_infall, bins=np.logspace(-4, -1, 31), alpha=.5, label='infall')
-    ax3.hist(metals_ejection, bins=np.logspace(-4, -1, 31), alpha=.5, label='ejection')
-    leg2 = ax3.legend(loc='best')
+    ax3.hist(metallicity_at_infall, bins=np.logspace(-4, -1, 31), alpha=.5, label='infall')
+    ax3.hist(metallicity_at_ejection, bins=np.logspace(-4, -1, 31), alpha=.5, label='ejection')
+    leg2 = ax3.legend(loc='best', fontsize=14)
 
     f.tight_layout()
     plt.subplots_adjust(top=0.93)
     f.suptitle('%s - %s' % (halo, definition), fontsize=20)
     plt.savefig(filename.split("/")[-1][:-3] + '_' + halo + '_' + definition + ".png", bbox_inches='tight')
 
-p = Pool(4)
+p = Pool(7)
 p.map(plot, utils.combinations)
 
