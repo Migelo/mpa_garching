@@ -53,9 +53,9 @@ def plot(args):
     ax3 = plt.subplot(gs[-1, 1:])
 
     _, _, _, cbar = pg.plotting.scatter_map('log10(temp)', np.log10(last_T),
-        s=cgm_m, qty=cgm_m['metallicity']/pg.solar.Z(), logscale=True, bins=[bins, bins],
-        extent=[[3, 8], [3, 8]], zero_is_white=True, av='mass',
-        vlim=[10**-2, 10**.5], ax=ax1)
+        s=cgm_m, qty='mass', colors=cgm_m['metallicity']/pg.solar.Z(),
+        logscale=True, bins=[bins, bins], extent=[[3, 8], [3, 8]],
+        zero_is_white=True, clim=[10**-2, 10**.5], colors_av='mass', ax=ax1)
     cbar_ax = cbar.ax
     cbar_ax.set_xlabel(r'$log_{10}\left( [ z ] \right)$', fontsize=30)
     ax1.plot([5.2, 5.2], [0, 1e100], lw=3, c='k')
