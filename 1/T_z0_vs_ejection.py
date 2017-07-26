@@ -8,7 +8,7 @@ import glob
 from multiprocessing import Pool
 import utils
 
-plt.style.use('general')
+#plt.style.use('general')
 
 filename = __file__
 
@@ -30,12 +30,12 @@ def plot(args):
     last_T = np.array([x[x>0][-1] for x in cgm['T_at_ejection'] if len(x[x>0])>0])
 
     bins = np.arange(3, 8.1, .1)
-    x_h, edges, _ = stats.binned_statistic(np.log10(last_T),
+    mass_last_T, edges, _ = stats.binned_statistic(np.log10(last_T),
         cgm_m['mass'], bins=bins, statistic='sum')
-    y_h, _, _ = stats.binned_statistic(np.log10(cgm_m['temp']),
+    mass_z0, _, _ = stats.binned_statistic(np.log10(cgm_m['temp']),
         cgm_m['mass'], bins=bins, statistic='sum')
 
-# calculate the sum of all mass in the 4 quadrants we have
+    # calculate the sum of all mass in the 4 quadrants we have
     u_l_m = (np.log10(cgm_m['temp']) <= 5.2) & (np.log10(last_T) > 5.2) #upper left mask
     u_r_m = (np.log10(cgm_m['temp']) > 5.2) & (np.log10(last_T) > 5.2) 
     b_l_m = (np.log10(cgm_m['temp']) <= 5.2) & (np.log10(last_T) <= 5.2) 
@@ -55,9 +55,10 @@ def plot(args):
     _, _, _, cbar = pg.plotting.scatter_map('log10(temp)', np.log10(last_T),
         s=cgm_m, qty='mass', colors=cgm_m['metallicity']/pg.solar.Z(),
         logscale=True, bins=[bins, bins], extent=[[3, 8], [3, 8]],
-        zero_is_white=True, clim=[10**-2, 10**.5], colors_av='mass', ax=ax1)
+        zero_is_white=True, clim=[10**-2, 10**.5], colors_av='mass', 
+        clogscale=True, ax=ax1)
     cbar_ax = cbar.ax
-    cbar_ax.set_xlabel(r'$log_{10}\left( [ z ] \right)$', fontsize=30)
+    cbar_ax.set_xlabel(r'$log_{10} [ Z ] $', fontsize=30)
     ax1.plot([5.2, 5.2], [0, 1e100], lw=3, c='k')
     ax1.plot([0, 1e100], [5.2, 5.2], lw=3, c='k')
     ax1.grid(False)
@@ -81,14 +82,14 @@ def plot(args):
 
 
     ax2.set_xlabel(r'$Mass\ [10^8\ M_\odot]$')
-    ax2.barh(edges[:-1], y_h / 1e8, height=np.diff(edges))
+    ax2.barh(edges[:-1], mass_last_T / 1e8, height=np.diff(edges))
     ax2.set_xlim(ax2.get_xlim()[::-1])
     ax2.set_ylim(limits)
     ax2.tick_params(labelleft='off')    
     plt.setp(ax2.xaxis.get_majorticklabels(), rotation=45)
 
     ax3.set_ylabel(r'$Mass\ [10^8\ M_\odot]$')
-    ax3.bar(edges[:-1], x_h / 1e8, width=np.diff(edges))
+    ax3.bar(edges[:-1], mass_z0 / 1e8, width=np.diff(edges))
     ax3.set_ylim(ax3.get_ylim()[::-1])
     ax3.set_xlim(limits)
     ax3.tick_params(labelbottom='off')

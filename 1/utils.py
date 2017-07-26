@@ -21,7 +21,7 @@ def prepare_step(y):
 
 '''Generate combinations of halos with all tracing types.'''
 halos = ('M0408', 'M0501', 'M0616', 'M0664', 'M0858', 'M0959',
-    'M0977', 'M1192', 'M1196', 'M1646', 'M1859', 'M2283')[::-1]
+    'M0977', 'M1192', 'M1196', 'M1646', 'M1859', 'M1859_weakFB', 'M2283')[::-1]
 #types =  ('disc-Uebler', 'disc', 'ball', 'ism')
 types =  ('ism', )
 combinations = []
