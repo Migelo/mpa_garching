@@ -11,8 +11,6 @@ from multiprocessing import Pool
 
 filename = __file__
 
-plt.style.use('general')
-
 n, start, end = 50, -6, -1
 bins=np.logspace(start, end, n)
 
@@ -58,31 +56,41 @@ def plot(args):
     ax3 = plt.subplot(gs[-1, 1:])
 
     ax1.scatter(halo_z_1st_infall, disk_z_1st_infall, alpha=.1, edgecolor=None)
-    ax1.set_xlabel('z infall ball')
-    ax1.set_ylabel('z infall ism')
+    ax1.set_xlabel(r'$z_{halo\ infall}$')
+    ax1.set_ylabel(r'$z_{galaxy\ infall}$')
     ax1.set_xlim((1e-6, 1e-1))
     ax1.set_ylim((1e-4, 1e-1))
     ax1.set_xscale('log')
     ax1.set_yscale('log')
-    ax1.plot([0, 1e10], [0, 1e10], c='r')
+    ax1.plot([0, 1e10], [0, 1e10], c='r', label='1:1')
     cont = ax1.contour(X, Y, Z, np.linspace(0, np.percentile(Z, 99), 10))
-    ax1.step(edges_h[:-1], disk_infall_avg, where='mid')
+    ax1.step(edges_h[:-1], disk_infall_avg, where='mid',
+        color='k', lw=2.5, label='average')
+    ax1.legend(loc='upper right')
    
-    ax2.barh(edges_d[:-1], mass_at_disc_infall, height=np.diff(edges_d), log=True)
+    ax2.barh(edges_d[:-1], mass_at_disc_infall / 1e9,
+        height=np.diff(edges_d), log=True, align='edge')
     ax2.set_yscale('log')
     ax2.set_xscale('linear')
     ax2.set_xlim(ax2.get_xlim()[::-1])
     ax2.set_ylim(ax1.get_ylim())
+    ax2.set_xlabel(r'$Mass\ [10^{9}\ M_\odot]$')
+    ax2.tick_params(labelleft='off')    
 
-    ax3.bar(edges_h[:-1], mass_at_halo_infall, width=np.diff(edges_h), log=True)
+
+    ax3.bar(edges_h[:-1], mass_at_halo_infall / 1e9,
+        width=np.diff(edges_h), align='edge', log=True)
     ax3.set_xscale('log')    
-    ax3.set_yscale('linear')    
+    ax3.set_yscale('linear')
     ax3.set_ylim(ax3.get_ylim()[::-1])
     ax3.set_xlim(ax1.get_xlim())
+    ax3.set_ylabel(r'$Mass\ [10^{9}\ M_\odot]$')
+    ax3.tick_params(labelbottom='off')    
+
 
     f.tight_layout()
-    plt.subplots_adjust(top=0.95)
-    f.suptitle('%s - %s' % (halo, definition), fontsize=20)
+    plt.subplots_adjust(top=0.93)
+    f.suptitle('%s - %s' % (halo, definition), fontsize=32)
 
     plt.savefig(filename.split("/")[-1][:-3] + '_' + halo + '_' + definition + ".png", bbox_inches='tight')
 
