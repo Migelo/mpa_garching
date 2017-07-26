@@ -8,8 +8,6 @@ import glob
 from multiprocessing import Pool
 import utils
 
-#plt.style.use('general')
-
 filename = __file__
 
 def plot(args):
@@ -83,14 +81,14 @@ def plot(args):
 
 
     ax2.set_xlabel(r'$Mass\ [10^8\ M_\odot]$')
-    ax2.barh(edges[:-1], mass_last_T / 1e8, height=np.diff(edges))
+    ax2.barh(edges[:-1], mass_last_T / 1e8, height=np.diff(edges), align='edge')
     ax2.set_xlim(ax2.get_xlim()[::-1])
     ax2.set_ylim(limits)
     ax2.tick_params(labelleft='off')    
     plt.setp(ax2.xaxis.get_majorticklabels(), rotation=45)
 
     ax3.set_ylabel(r'$Mass\ [10^8\ M_\odot]$')
-    ax3.bar(edges[:-1], mass_z0 / 1e8, width=np.diff(edges))
+    ax3.bar(edges[:-1], mass_z0 / 1e8, width=np.diff(edges), align='edge')
     ax3.set_ylim(ax3.get_ylim()[::-1])
     ax3.set_xlim(limits)
     ax3.tick_params(labelbottom='off')
