@@ -21,7 +21,7 @@ def prepare_step(y):
 
 '''Generate combinations of halos with all tracing types.'''
 halos = ('M0408', 'M0501', 'M0616', 'M0664', 'M0858', 'M0959',
-    'M0977', 'M1192', 'M1196', 'M1646', 'M1859', 'M1859_weakFB', 'M2283')[::-1]
+    'M0977', 'M1192', 'M1196', 'M1646', 'M1859', 'M2283')[::-1]
 #types =  ('disc-Uebler', 'disc', 'ball', 'ism')
 types =  ('ism', )
 combinations = []
@@ -54,9 +54,9 @@ def round_to_n(x, n):
     " Round x to n significant figures "
     return round(x, -int(math.floor(np.sign(x) * np.log10(abs(x)))) + n)
 
-def str_fmt(x, n=2):
+def str_fmt(x, n=1):
     " Format x into nice Latex rounding to n"
     power = int(np.log10(round_to_n(x, 0)))
     f_SF = round_to_n(x, n) * pow(10, -power)
-    return r"{}\cdot 10^{}".format(f_SF, power)
+    return r"%s\cdot 10^{%s}" % (f_SF, power)
 
