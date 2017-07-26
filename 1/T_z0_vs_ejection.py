@@ -55,7 +55,7 @@ def plot(args):
     _, _, _, cbar = pg.plotting.scatter_map('log10(temp)', np.log10(last_T),
         s=cgm_m, qty='mass', colors=cgm_m['metallicity']/pg.solar.Z(),
         logscale=True, bins=[bins, bins], extent=[[3, 8], [3, 8]],
-        zero_is_white=True, clim=[10**-1.5, 10**.5], colors_av='mass', 
+        zero_is_white=True, clim=[10**-1., 10**.5], colors_av='mass', 
         clogscale=True, ax=ax1)
     cbar_ax = cbar.ax
     cbar_ax.set_xlabel(r'$log_{10} [ Z ] $', fontsize=30)
