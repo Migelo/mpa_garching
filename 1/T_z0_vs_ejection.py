@@ -26,6 +26,7 @@ def plot(args):
     mask = np.max(cgm['T_at_ejection'], axis=-1) > 0
     cgm_m = cgm[mask]
     last_T = np.array([x[x>0][-1] for x in cgm['T_at_ejection'] if len(x[x>0])>0])
+    last_t = np.array([x[x>0][-1] for x in cgm['ejection_time'] if len(x[x>0])>0])
 
     bins = np.arange(3, 8.1, .1)
     mass_last_T, edges, _ = stats.binned_statistic(np.log10(last_T),
@@ -51,12 +52,16 @@ def plot(args):
     ax3 = plt.subplot(gs[-1, 1:])
 
     _, _, _, cbar = pg.plotting.scatter_map('log10(temp)', np.log10(last_T),
-        s=cgm_m, qty='mass', colors=cgm_m['metallicity']/pg.solar.Z(),
+        #s=cgm_m, qty='mass', colors=cgm_m['metallicity']/pg.solar.Z(),
+        s=cgm_m, qty='mass', colors=last_t,
         logscale=True, bins=[bins, bins], extent=[[3, 8], [3, 8]],
-        zero_is_white=True, clim=[10**-1., 10**.5], colors_av='mass', 
-        clogscale=True, ax=ax1)
+#        zero_is_white=True, clim=[10**-1., 10**.5], colors_av='mass', 
+        zero_is_white=True, clim=[2, s.cosmic_time()], colors_av='mass', 
+#        clogscale=True, ax=ax1)
+        clogscale=False, ax=ax1)
     cbar_ax = cbar.ax
-    cbar_ax.set_xlabel(r'$log_{10} [ Z ] $', fontsize=30)
+    cbar_ax.set_xlabel('last ejection time [Gyr]', fontsize=30)
+    #cbar_ax.set_xlabel(r'$log_{10} [ Z ] $', fontsize=30)
     plt.setp(cbar_ax.get_xticklabels(), fontsize=14)
     ax1.plot([5.2, 5.2], [0, 1e100], lw=3, c='k')
     ax1.plot([0, 1e100], [5.2, 5.2], lw=3, c='k')
