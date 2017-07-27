@@ -35,6 +35,8 @@ def plot(args):
     cgm_h_in = h_h.gas[~ism][~pg.BallMask(R200_frac*R200)][~pg.IDMask(ism_IDs)]
     mask_h = cgm_h_in['infall_time'][:, 0] != cgm_h_in['infall_time'][cgm_h_in['infall_time'] > .1].flatten().min()
     cgm_h_m = cgm_h_in[mask_h]
+    mask_h2 = np.max(cgm_h_m['T_at_infall'], axis=1) > 0
+    cgm_h_m = cgm_h_m[mask_h2]
 
     last_T_i = np.array([x[x>0][-1] for x in cgm_i_m['T_at_ejection'] if len(x[x>0])>0])
     last_mass_i = np.array([x[x>0][-1] for x in cgm_i_m['mass_at_ejection'] if len(x[x>0])>0])
