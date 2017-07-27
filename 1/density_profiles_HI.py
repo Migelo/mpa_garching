@@ -172,27 +172,32 @@ f.tight_layout()
 
 plt.savefig(filename.split("/")[-1][:-3] + ".png", bbox_inches='tight')
 
-f, ax = plt.subplots(1, figsize=utils.figsize[::-1])
-ax.set_ylabel(r'$log_{10}\left(\rho\ [%s]\right)$' % y_label, fontsize=44)
-ax.set_xlabel(r'$r\ [kpc]$', fontsize=44)
-ax.set_ylim((1.5, 5))
-ax.set_title('All gas')
-ax.plot(bins[:-1], np.percentile(profiles[0], 50, axis=1), color='b', label='total')
-ax.plot(bins[:-1], np.percentile(profiles[1], 50, axis=1), color='b', ls='-.', lw=2, label='total T>10^5.2 K')
-ax.plot(bins[:-1], np.percentile(profiles[2], 50, axis=1), color='b', ls='dashed', label='total T<=10^5.2 K')
-ax.plot(bins[:-1], np.percentile(profiles[3], 50, axis=1), color='r', label='recycled')
-ax.plot(bins[:-1], np.percentile(profiles[4], 50, axis=1), color='r', ls='-.', lw=2, label='recycled T>10^5.2 K')
-ax.plot(bins[:-1], np.percentile(profiles[5], 50, axis=1), color='r', ls='dashed', label='recycled T<=10^5.2 K')
-ax.plot(bins[:-1], np.percentile(profiles[6], 50, axis=1), color='g', label='non recycled')
-ax.plot(bins[:-1], np.percentile(profiles[7], 50, axis=1), color='g', ls='-.', lw=2, label='non recycled T>10^5.2 K')
-ax.plot(bins[:-1], np.percentile(profiles[8], 50, axis=1), color='g', ls='dashed', label='non recycled T<=10^5.2 K')
-ax.fill_between(bins[:-1], np.percentile(profiles[0], 25, axis=1),
+f, ax = plt.subplots(3, figsize=utils.figsize)
+for a in ax:
+    a.set_ylabel(r'$log_{10}\left(\rho\ [%s]\right)$' % y_label, fontsize=15)
+    a.set_ylim((1.5, 5))
+ax[0].set_title('All gas')
+ax[2].set_xlabel(r'$r\ [kpc]$', fontsize=20)
+
+ax[0].plot(bins[:-1], np.percentile(profiles[0], 50, axis=1), color='b', label='total')
+ax[0].plot(bins[:-1], np.percentile(profiles[1], 50, axis=1), color='b', ls='-.', lw=2, label=r'total $T>10^{5.2}$ K')
+ax[0].plot(bins[:-1], np.percentile(profiles[2], 50, axis=1), color='b', ls='dashed', label=r'total $T\leq10^{5.2}$ K')
+ax[0].fill_between(bins[:-1], np.percentile(profiles[0], 25, axis=1),
     np.percentile(profiles[0], 75, axis=1), alpha=.25, color='b')
-ax.fill_between(bins[:-1], np.percentile(profiles[3], 25, axis=1),
+ax[1].plot(bins[:-1], np.percentile(profiles[3], 50, axis=1), color='r', label='recycled')
+ax[1].plot(bins[:-1], np.percentile(profiles[4], 50, axis=1), color='r', ls='-.', lw=2, label=r'recycled $T>10^{5.2}$ K')
+ax[1].plot(bins[:-1], np.percentile(profiles[5], 50, axis=1), color='r', ls='dashed', label=r'recycled $T\leq10^{5.2}$ K')
+ax[1].fill_between(bins[:-1], np.percentile(profiles[3], 25, axis=1),
     np.percentile(profiles[3], 75, axis=1), alpha=.25, color='r')
-ax.fill_between(bins[:-1], np.percentile(profiles[6], 25, axis=1),
+ax[2].plot(bins[:-1], np.percentile(profiles[6], 50, axis=1), color='g', label='non recycled')
+ax[2].plot(bins[:-1], np.percentile(profiles[7], 50, axis=1), color='g', ls='-.', lw=2, label=r'non recycled $T>10^{5.2}$ K')
+ax[2].plot(bins[:-1], np.percentile(profiles[8], 50, axis=1), color='g', ls='dashed', label=r'non recycled $T\leq10^{5.2}$ K')
+ax[2].fill_between(bins[:-1], np.percentile(profiles[6], 25, axis=1),
     np.percentile(profiles[6], 75, axis=1), alpha=.25, color='g')
-ax.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+
+ax[0].legend(loc=1, fontsize=15)
+ax[1].legend(loc=1, fontsize=15)
+ax[2].legend(loc=1, fontsize=15)
 
 f.tight_layout()
 
