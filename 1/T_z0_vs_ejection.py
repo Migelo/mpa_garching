@@ -350,7 +350,8 @@ def plot(args):
     f.suptitle('%s - %s' % (halo, definition), fontsize=44)
     
 
-
+    plt.savefig(filename.split("/")[-1][:-3] + '_' + halo + '_hist.png', bbox_inches='tight')
+    
 
 
 
