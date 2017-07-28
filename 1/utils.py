@@ -60,3 +60,5 @@ def str_fmt(x, n=1):
     f_SF = round_to_n(x, n) * pow(10, -power)
     return r"%s\cdot 10^{%s}" % (f_SF, power)
 
+def flatten_list(array):
+    return [item for sublist in array for item in sublist]
