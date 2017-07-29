@@ -158,7 +158,7 @@ def plot(args):
         s=cgm_h_m, qty='mass', colors=np.log10(cgm_h_m['metallicity']/pg.solar.Z()),
         #s=cgm_i_m, qty='mass', colors=last_t,
         logscale=True, bins=[bins, bins], extent=[[3, 8], [3, 8]],
-        zero_is_white=True, clim=[-1., .5], colors_av='mass', 
+        zero_is_white=True, clim=[-1., .49], colors_av='mass', 
         #zero_is_white=True, clim=[2, s.cosmic_time()], colors_av='mass', 
         clogscale=False, ax=ax1)
 #        clogscale=False, ax=ax1)
@@ -338,10 +338,6 @@ def plot(args):
     f.suptitle('%s - %s' % (halo, 'halo accreted'), fontsize=44)
 
     plt.savefig(filename.split("/")[-1][:-3] + '_' + halo + '_hallo_infall_ej_time.png', bbox_inches='tight')
-
-
-
-
 
     
 
