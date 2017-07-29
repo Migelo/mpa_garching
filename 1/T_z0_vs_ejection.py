@@ -91,7 +91,7 @@ def plot(args):
         s=cgm_i_m, qty='mass', colors=np.log10(cgm_i_m['metallicity']/pg.solar.Z()),
         #s=cgm_m, qty='mass', colors=last_t,
         logscale=True, bins=[bins, bins], extent=[[3, 8], [3, 8]],
-        zero_is_white=True, clim=[-1., .5], colors_av='mass', 
+        zero_is_white=True, clim=[-1., .49], colors_av='mass', 
         #zero_is_white=True, clim=[2, s.cosmic_time()], colors_av='mass', 
         clogscale=False, ax=ax1)
 #        clogscale=False, ax=ax1)
@@ -104,6 +104,8 @@ def plot(args):
     ax1.grid(False)
     ax1.set_xlabel(r"$log_{10}(T_{z=0}\ [K])$", fontsize=30)
     ax1.set_ylabel(r"$log_{10}(T_{last\ ej}\ [K])$", fontsize=30)
+    plt.setp(ax1.get_xticklabels(), fontsize=25)
+    plt.setp(ax1.get_yticklabels(), fontsize=25)
     ax1.set_xlim([3, 8])
     ax1.set_ylim([3, 8])
     limits = ax1.get_xlim()
@@ -169,6 +171,8 @@ def plot(args):
     ax1.grid(False)
     ax1.set_xlabel(r"$log_{10}(T_{z=0}\ [K])$", fontsize=30)
     ax1.set_ylabel(r"$log_{10}(T_{last\ infall}\ [K])$", fontsize=30)
+    plt.setp(ax1.get_xticklabels(), fontsize=25)
+    plt.setp(ax1.get_yticklabels(), fontsize=25)
     ax1.set_xlim([3, 8])
     ax1.set_ylim([3, 8])
     limits = ax1.get_xlim()
@@ -232,6 +236,8 @@ def plot(args):
     ax1.grid(False)
     ax1.set_xlabel(r"$log_{10}(T_{z=0}\ [K])$", fontsize=30)
     ax1.set_ylabel(r"$log_{10}(T_{last\ ej}\ [K])$", fontsize=30)
+    plt.setp(ax1.get_xticklabels(), fontsize=25)
+    plt.setp(ax1.get_yticklabels(), fontsize=25)
     ax1.set_xlim([3, 8])
     ax1.set_ylim([3, 8])
     limits = ax1.get_xlim()
@@ -293,6 +299,8 @@ def plot(args):
     ax1.grid(False)
     ax1.set_xlabel(r"$log_{10}(T_{z=0}\ [K])$", fontsize=30)
     ax1.set_ylabel(r"$log_{10}(T_{last\ infall}\ [K])$", fontsize=30)
+    plt.setp(ax1.get_xticklabels(), fontsize=25)
+    plt.setp(ax1.get_yticklabels(), fontsize=25)
     ax1.set_xlim([3, 8])
     ax1.set_ylim([3, 8])
     limits = ax1.get_xlim()
