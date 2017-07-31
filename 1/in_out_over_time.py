@@ -15,8 +15,8 @@ def plot(args):
     path = '/ptmp/mpa/naab/REFINED/%s/SF_X/4x-2phase/out/snap_%s_4x_???' % (halo, halo)
     max = int(sorted(glob.glob(path))[-1][-3:])
     s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/%s/SF_X/4x-2phase/out/snap_%s_4x_%s' % (halo, halo, max), gas_trace='/u/mihac/data/%s/4x-2phase/gastrace_%s' % (halo, definition), star_form=None)
+    bins = np.arange(0, s.cosmic_time() + .2, .2)
 
-    timerange = np.linspace(0, s.cosmic_time(), 13 * 8)
     rec = s.gas[s.gas['num_recycled'] > -1]
     metals_infall = rec['metals_at_infall']
     metals_infall_initial = metals_infall[:, 0]
@@ -39,73 +39,62 @@ def plot(args):
     ejection_time_initial = ejection_time[:, 0]
     ejection_time_reac = ejection_time[:, 1:]
 
-    metals_infall, edges, count = stats.binned_statistic(np.concatenate(infall_time), np.concatenate(metals_infall), statistic='sum', bins=timerange)
-    metals_ejection, edges, count = stats.binned_statistic(np.concatenate(ejection_time), np.concatenate(metals_ejection), statistic='sum', bins=timerange)
-    metals_infall_initial, edges_init, count = stats.binned_statistic(infall_time_initial, metals_infall_initial, statistic='sum', bins=timerange)
-    metals_ejection_initial, edges_init, count = stats.binned_statistic(ejection_time_initial, metals_ejection_initial, statistic='sum', bins=timerange)
-    metals_infall_reac, edges_reac, count = stats.binned_statistic(np.concatenate(infall_time_reac), np.concatenate(metals_infall_reac), statistic='sum', bins=timerange)
-    metals_ejection_reac, edges_reac, count = stats.binned_statistic(np.concatenate(ejection_time_reac), np.concatenate(metals_ejection_reac), statistic='sum', bins=timerange)
-    mass_infall, edges, count = stats.binned_statistic(np.concatenate(infall_time), np.concatenate(mass_infall), statistic='sum', bins=timerange)
-    mass_ejection, edges, count = stats.binned_statistic(np.concatenate(ejection_time), np.concatenate(mass_ejection), statistic='sum', bins=timerange)
-    mass_infall_initial, edges_init, count = stats.binned_statistic(infall_time_initial, mass_infall_initial, statistic='sum', bins=timerange)
-    mass_ejection_initial, edges_init, count = stats.binned_statistic(ejection_time_initial, mass_ejection_initial, statistic='sum', bins=timerange)
-    mass_infall_reac, edges_reac, count = stats.binned_statistic(np.concatenate(infall_time_reac), np.concatenate(mass_infall_reac), statistic='sum', bins=timerange)
-    mass_ejection_reac, edges_reac, count = stats.binned_statistic(np.concatenate(ejection_time_reac), np.concatenate(mass_ejection_reac), statistic='sum', bins=timerange)
+    metals_infall, _, _ = stats.binned_statistic(np.concatenate(infall_time), np.concatenate(metals_infall), statistic='sum', bins=bins)
+    metals_ejection, _, _ = stats.binned_statistic(np.concatenate(ejection_time), np.concatenate(metals_ejection), statistic='sum', bins=bins)
+    metals_infall_initial, _, _ = stats.binned_statistic(infall_time_initial, metals_infall_initial, statistic='sum', bins=bins)
+    metals_ejection_initial, _, _ = stats.binned_statistic(ejection_time_initial, metals_ejection_initial, statistic='sum', bins=bins)
+    metals_infall_reac, _, _ = stats.binned_statistic(np.concatenate(infall_time_reac), np.concatenate(metals_infall_reac), statistic='sum', bins=bins)
+    metals_ejection_reac, _, _ = stats.binned_statistic(np.concatenate(ejection_time_reac), np.concatenate(metals_ejection_reac), statistic='sum', bins=bins)
+    mass_infall, _, _ = stats.binned_statistic(np.concatenate(infall_time), np.concatenate(mass_infall), statistic='sum', bins=bins)
+    mass_ejection, _, _ = stats.binned_statistic(np.concatenate(ejection_time), np.concatenate(mass_ejection), statistic='sum', bins=bins)
+    mass_infall_initial, _, _ = stats.binned_statistic(infall_time_initial, mass_infall_initial, statistic='sum', bins=bins)
+    mass_ejection_initial, _, _ = stats.binned_statistic(ejection_time_initial, mass_ejection_initial, statistic='sum', bins=bins)
+    mass_infall_reac, _, _ = stats.binned_statistic(np.concatenate(infall_time_reac), np.concatenate(mass_infall_reac), statistic='sum', bins=bins)
+    mass_ejection_reac, _, _ = stats.binned_statistic(np.concatenate(ejection_time_reac), np.concatenate(mass_ejection_reac), statistic='sum', bins=bins)
 
-    dt = timerange[1]*1e9
+    dt = bins[1] * 1e9
 
-    metals_infall /=  dt
-    metals_ejection /= dt
-    metals_infall_initial /= dt
-    metals_ejection_initial /= dt
-    metals_infall_reac /= dt
-    metals_ejection_reac /= dt
-    mass_infall /= dt
-    mass_ejection /= dt
-    mass_infall_initial /= dt
-    mass_ejection_initial /= dt
-    mass_infall_reac /= dt
-    mass_ejection_reac /= dt
-
-    metals_infall = utils.prepare_step(metals_infall)
-    metals_ejection = utils.prepare_step(metals_ejection)
-    metals_infall_initial = utils.prepare_step(metals_infall_initial)
-    metals_ejection_initial = utils.prepare_step(metals_ejection_initial)
-    metals_infall_reac = utils.prepare_step(metals_infall_reac)
-    metals_ejection_reac = utils.prepare_step(metals_ejection_reac)
-    mass_infall = utils.prepare_step(mass_infall)
-    mass_ejection = utils.prepare_step(mass_ejection)
-    mass_infall_initial = utils.prepare_step(mass_infall_initial)
-    mass_ejection_initial = utils.prepare_step(mass_ejection_initial)
-    mass_infall_reac = utils.prepare_step(mass_infall_reac)
-    mass_ejection_reac = utils.prepare_step(mass_ejection_reac)
+    metals_infall = np.log10(metals_infall / dt)
+    metals_ejection = np.log10(metals_ejection / dt)
+    metals_infall_initial = np.log10(metals_infall_initial / dt)
+    metals_ejection_initial = np.log10(metals_ejection_initial / dt)
+    metals_infall_reac = np.log10(metals_infall_reac / dt)
+    metals_ejection_reac = np.log10(metals_ejection_reac / dt)
+    mass_infall = np.log10(mass_infall / dt)
+    mass_ejection = np.log10(mass_ejection / dt)
+    mass_infall_initial = np.log10(mass_infall_initial / dt)
+    mass_ejection_initial = np.log10(mass_ejection_initial / dt)
+    mass_infall_reac = np.log10(mass_infall_reac / dt)
+    mass_ejection_reac = np.log10(mass_ejection_reac / dt)
 
     f, (ax1, ax2, ax3, ax4) = plt.subplots(4, figsize=utils.figsize * 2)
     axes = (ax1, ax2, ax3, ax4)
     for ax in axes:
         ax.set_xlim((0, s.cosmic_time()))
-        ax.set_yscale('log')
-        ax.set_ylim((1e-2, 1e2))
+        ax.set_ylim((-2, 2))
     ax4.set_xlabel("Time [yr]")
     for ax in axes[:-1]:
         ax.tick_params(labelbottom='off')
 
     ax1.set_title("Mass")
-    ax1.step(edges, mass_infall, label='Total infall')
-    ax1.step(edges_init, mass_infall_initial, label='First infall')
-    ax1.step(edges_reac, mass_infall_reac, label='Subsequent infall')
-    lgd1 = ax1.legend(loc='upper left', fontsize=17)
-    ax2.step(edges, mass_ejection, label='Total ejection')
-    ax2.step(edges_init, mass_ejection_initial, label='First ejection')
-    ax2.step(edges_reac, mass_ejection_reac, label='Subsequent ejection')
+    ax1.step(bins[:-1], mass_infall, label='Total infall')
+    ax1.step(bins[:-1], mass_infall_initial, label='First infall')
+    ax1.step(bins[:-1], mass_infall_reac, label='Subsequent infall')
+    lgd1 = ax1.legend(loc='best', fontsize=17)
+    ax2.step(bins[:-1], mass_ejection, label='Total ejection')
+    ax2.step(bins[:-1], mass_ejection_initial, label='First ejection')
+    ax2.step(bins[:-1], mass_ejection_reac, label='Subsequent ejection')
+    lgd2 = ax2.legend(loc='best', fontsize=17)
 
     ax3.set_title("Metals")
-    ax3.step(edges, metals_infall, label='Total infall')
-    ax3.step(edges_init, metals_infall_initial, label='First infall')
-    ax3.step(edges_reac, metals_infall_reac, label='Subsequent ejection')
-    ax4.step(edges, metals_ejection, label='Total ejection')
-    ax4.step(edges_init, metals_ejection_initial, label='First ejection')
-    ax4.step(edges_reac, metals_ejection_reac, label='Subsequent ejection')
+    ax3.step(bins[:-1], metals_infall, label='Total infall')
+    ax3.step(bins[:-1], metals_infall_initial, label='First infall')
+    ax3.step(bins[:-1], metals_infall_reac, label='Subsequent ejection')
+    lgd3 = ax3.legend(loc='best', fontsize=17)
+    ax4.step(bins[:-1], metals_ejection, label='Total ejection')
+    ax4.step(bins[:-1], metals_ejection_initial, label='First ejection')
+    ax4.step(bins[:-1], metals_ejection_reac, label='Subsequent ejection')
+    lgd4 = ax4.legend(loc='best', fontsize=17)
 
     f.tight_layout()
 
