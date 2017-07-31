@@ -126,7 +126,6 @@ def plot(args):
     ax1.text(5.2, 5.2, r'$%.0f\%%$' % ((u_l_i + u_r_i + b_l_i + b_r_i) * 100 / tot_mass),
         va='center', ha='center', bbox=dict(facecolor='white'), fontsize=23)
 
-
     ax2.set_xlabel(r'$Mass\ [10^8\ M_\odot]$')
     ax2.barh(edges[:-1], mass_last_T_i / 1e8, height=np.diff(edges), align='edge')
     ax2.set_xlim(ax2.get_xlim()[::-1])
@@ -145,10 +144,6 @@ def plot(args):
     f.suptitle('%s%s - %s' % (halo, modification, 'ism ejected'), fontsize=44)
 
     plt.savefig(filename.split("/")[-1][:-3] + '_' + halo + modification + '_ism_ejection_metallicity.png', bbox_inches='tight')
-
-
-
-
 
     f = plt.figure(figsize=(15, 15))
     gs = gridspec.GridSpec(4, 4)
@@ -189,7 +184,6 @@ def plot(args):
     ax1.text(5.2, 5.2, r'$%.0f\%%$' % ((u_l_h + u_r_h + b_l_h + b_r_h) * 100 / tot_mass),
         va='center', ha='center', bbox=dict(facecolor='white'), fontsize=23)
 
-
     ax2.set_xlabel(r'$Mass\ [10^8\ M_\odot]$')
     ax2.barh(edges[:-1], mass_last_T_h / 1e8, height=np.diff(edges), align='edge')
     ax2.set_xlim(ax2.get_xlim()[::-1])
@@ -208,11 +202,6 @@ def plot(args):
     f.suptitle('%s%s - %s' % (halo, modification, 'halo accreted'), fontsize=44)
 
     plt.savefig(filename.split("/")[-1][:-3] + '_' + halo + modification + '_hallo_infall_metallicity.png', bbox_inches='tight')
-
-
-
-
-
 
     # colors by last ej time
     f = plt.figure(figsize=(15, 15))
@@ -254,7 +243,6 @@ def plot(args):
     ax1.text(5.2, 5.2, r'$%.0f\%%$' % ((u_l_i + u_r_i + b_l_i + b_r_i) * 100 / tot_mass),
         va='center', ha='center', bbox=dict(facecolor='white'), fontsize=23)
 
-
     ax2.set_xlabel(r'$Mass\ [10^8\ M_\odot]$')
     ax2.barh(edges[:-1], mass_last_T_i / 1e8, height=np.diff(edges), align='edge')
     ax2.set_xlim(ax2.get_xlim()[::-1])
@@ -273,8 +261,6 @@ def plot(args):
     f.suptitle('%s%s - %s' % (halo, modification, 'ism ejected'), fontsize=44)
 
     plt.savefig(filename.split("/")[-1][:-3] + '_' + halo + modification + '_ism_ejection_ej_time.png', bbox_inches='tight')
-
-
 
     f = plt.figure(figsize=(15, 15))
     gs = gridspec.GridSpec(4, 4)
@@ -315,7 +301,6 @@ def plot(args):
     ax1.text(5.2, 5.2, r'$%.0f\%%$' % ((u_l_h + u_r_h + b_l_h + b_r_h) * 100 / tot_mass),
         va='center', ha='center', bbox=dict(facecolor='white'), fontsize=23)
 
-
     ax2.set_xlabel(r'$Mass\ [10^8\ M_\odot]$')
     ax2.barh(edges[:-1], mass_last_T_h / 1e8, height=np.diff(edges), align='edge')
     ax2.set_xlim(ax2.get_xlim()[::-1])
@@ -335,27 +320,24 @@ def plot(args):
 
     plt.savefig(filename.split("/")[-1][:-3] + '_' + halo + modification + '_hallo_infall_ej_time.png', bbox_inches='tight')
 
-    
-
     # histogram
     f, ax = plt.subplots(1, figsize=utils.figsize[::-1])
     ax.set_xlabel('Cosmic time [Gyr]')
     ax.set_ylabel(r'Mass $[10^9M_\odot]$')
     ax.set_xlim((0, 14))
-    ax.bar(time_bins[:-1], last_mass_i_hist / 1e9, np.diff(time_bins),
+    ax.bar(time_bins[:-1], np.cumsum(last_mass_i_hist) / 1e9, np.diff(time_bins),
         label='ism ejected')
-    ax.bar(time_bins[:-1], last_mass_h_hist / 1e9, np.diff(time_bins),
+    ax.bar(time_bins[:-1], np.cumsum(last_mass_h_hist) / 1e9, np.diff(time_bins),
         label='halo accreted', alpha=.5)
     ax.legend(loc='upper right')
     f.tight_layout()
     plt.subplots_adjust(top=0.92)
     f.suptitle('%s%s - %s' % (halo, modification, definition), fontsize=44)
-    
 
     plt.savefig(filename.split("/")[-1][:-3] + '_' + halo + modification + '_hist.png', bbox_inches='tight')
-    
 
 p = Pool(8)
-combinations = np.append(utils.combinations, ('M1859-weakFB', 'ism'))
+combinations = utils.combinations
+combinations.insert(0, ('M1859-weakFB', 'ism'))
 p.map(plot, combinations)
 
