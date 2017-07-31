@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
 import pygad as pg
 from scipy import stats
 import glob
@@ -10,7 +11,7 @@ filename = __file__
 
 def plot(args):
     halo, definition = args
-
+    print halo
     path = '/ptmp/mpa/naab/REFINED/%s/SF_X/4x-2phase/out/snap_%s_4x_???' % (halo, halo)
     max = int(sorted(glob.glob(path))[-1][-3:])
     s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/%s/SF_X/4x-2phase/out/snap_%s_4x_%s' % (halo, halo, max), gas_trace='/u/mihac/data/%s/4x-2phase/gastrace_%s' % (halo, definition), star_form=None)
@@ -66,7 +67,6 @@ def plot(args):
     mass_infall_reac /= dt
     mass_ejection_reac /= dt
 
-
     metals_infall = utils.prepare_step(metals_infall)
     metals_ejection = utils.prepare_step(metals_ejection)
     metals_infall_initial = utils.prepare_step(metals_infall_initial)
@@ -80,42 +80,57 @@ def plot(args):
     mass_infall_reac = utils.prepare_step(mass_infall_reac)
     mass_ejection_reac = utils.prepare_step(mass_ejection_reac)
 
-
-    fig, (ax1, ax2, ax3, ax4) = plt.subplots(4, figsize=(25, 20))
-    plt.tight_layout()
-    for ax in (ax1, ax2, ax3, ax4):
-        ax.grid(True)
-        ax.set_xlabel("Time [yr]")
+    f, (ax1, ax2, ax3, ax4) = plt.subplots(4, figsize=utils.figsize * 2)
+    axes = (ax1, ax2, ax3, ax4)
+    for ax in axes:
         ax.set_xlim((0, s.cosmic_time()))
-
-    ax1.set_ylabel("mass rate [$M_{\odot}/yr$]")
-    ax2.set_ylabel("mass rate [$M_{\odot}/yr$]")
-    ax3.set_ylabel("metal rate [$M_{\odot}/yr$]")
-    ax4.set_ylabel("metal rate [$M_{\odot}/yr$]")
+        ax.set_yscale('log')
+        ax.set_ylim((1e-2, 1e2))
+    ax4.set_xlabel("Time [yr]")
+    for ax in axes[:-1]:
+        ax.tick_params(labelbottom='off')
 
     ax1.set_title("Mass")
     ax1.step(edges, mass_infall, label='Total infall')
     ax1.step(edges_init, mass_infall_initial, label='First infall')
     ax1.step(edges_reac, mass_infall_reac, label='Subsequent infall')
-    lgd1 = ax1.legend(loc='upper left')
+    lgd1 = ax1.legend(loc='upper left', fontsize=17)
     ax2.step(edges, mass_ejection, label='Total ejection')
     ax2.step(edges_init, mass_ejection_initial, label='First ejection')
     ax2.step(edges_reac, mass_ejection_reac, label='Subsequent ejection')
-    lgd2 = ax2.legend(loc='upper left')
 
     ax3.set_title("Metals")
     ax3.step(edges, metals_infall, label='Total infall')
     ax3.step(edges_init, metals_infall_initial, label='First infall')
     ax3.step(edges_reac, metals_infall_reac, label='Subsequent ejection')
-    lgd3 = ax3.legend(loc='upper left')
     ax4.step(edges, metals_ejection, label='Total ejection')
     ax4.step(edges_init, metals_ejection_initial, label='First ejection')
     ax4.step(edges_reac, metals_ejection_reac, label='Subsequent ejection')
-    lgd4 = ax4.legend(loc='upper left')
 
-    utils.mkdir('./%s' % (halo))
-    plt.savefig('./%s/' % (halo) + ("/")[-1][:-3] + '_' + halo + '_' + definition + ".png", bbox_inches='tight')
+    f.tight_layout()
 
-p = Pool(4)
+    gs = gridspec.GridSpec(4,2)
+    gs.update(left=0.1, right=0.48, wspace=0.05)
+    f.subplots_adjust(left=.15)
+
+    for i, ax in enumerate(axes):
+        ax.set_subplotspec(gs[i, 1])
+
+    aux1 = f.add_subplot(gs[:, 0])
+
+    aux1.set_ylabel(r"$log_{10}\left(Mass\ rate\ [M_{\odot}/yr]\right)$", fontsize=30)
+
+    for ax in [aux1,]:
+        ax.tick_params(size=0)
+        ax.grid(False)
+        ax.set_xticklabels([])
+        ax.set_yticklabels([])
+        ax.set_facecolor("none")
+        for pos in ["left", "right", "top", "bottom"]:
+            ax.spines[pos].set_visible(False)
+    
+    plt.savefig('%s_%s_%s.png' % (filename.split('/')[-1][:-3], halo, definition))
+
+p = Pool(8)
 p.map(plot, utils.combinations)
 
