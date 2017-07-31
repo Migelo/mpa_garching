@@ -18,7 +18,7 @@ def plot(args):
     max = int(sorted(glob.glob(path))[-1][-3:])
     s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/%s/SF_X/4x-2phase/out/snap_%s_4x_%s' % (halo, halo, max), gas_trace='/u/mihac/data/%s/4x-2phase/gastrace_%s' % (halo, definition), star_form=None)
     
-    timerange = np.arange(0, s.cosmic_time(), 0.5)
+    bins = np.arange(0, s.cosmic_time(), 0.5)
 
     mask = s.gas['num_recycled'] > -1
     s_m = s.gas[mask]
@@ -36,42 +36,42 @@ def plot(args):
     ejection_time_initial = ejection_time[:, 0]
     ejection_time_reac = ejection_time[:, 1:]
     
-    mass_infall, _, _ = stats.binned_statistic(np.concatenate(infall_time), np.concatenate(mass_infall), statistic='sum', bins=timerange)
-    mass_infall_initial, _, _ = stats.binned_statistic(infall_time_initial, mass_infall_initial, statistic='sum', bins=timerange)
-    mass_infall_reac, _, _ = stats.binned_statistic(np.concatenate(infall_time_reac), np.concatenate(mass_infall_reac), statistic='sum', bins=timerange)
-    mass_ejection, _, _ = stats.binned_statistic(np.concatenate(ejection_time), np.concatenate(mass_ejection), statistic='sum', bins=timerange)
-    mass_ejection_initial, _, _ = stats.binned_statistic(ejection_time_initial, mass_ejection_initial, statistic='sum', bins=timerange)
-    mass_ejection_reac, _, _ = stats.binned_statistic(np.concatenate(ejection_time_reac), np.concatenate(mass_ejection_reac), statistic='sum', bins=timerange)
-
-    dt = timerange[1] * 1e9
-
-    mass_infall /= dt
-    mass_infall_initial /= dt
-    mass_infall_reac /= dt
-    mass_ejection /= dt
+    mass_infall, _, _ = stats.binned_statistic(np.concatenate(infall_time), np.concatenate(mass_infall), statistic='sum', bins=bins)
+    mass_infall_initial, _, _ = stats.binned_statistic(infall_time_initial, mass_infall_initial, statistic='sum', bins=bins)
+    mass_infall_reac, _, _ = stats.binned_statistic(np.concatenate(infall_time_reac), np.concatenate(mass_infall_reac), statistic='sum', bins=bins)
+    mass_ejection, _, _ = stats.binned_statistic(np.concatenate(ejection_time), np.concatenate(mass_ejection), statistic='sum', bins=bins)
+    mass_ejection_initial, _, _ = stats.binned_statistic(ejection_time_initial, mass_ejection_initial, statistic='sum', bins=bins)
+    mass_ejection_reac, _, _ = stats.binned_statistic(np.concatenate(ejection_time_reac), np.concatenate(mass_ejection_reac), statistic='sum', bins=bins)
 
     total_infall = mass_infall.sum()
     halftime = 0
-    for i, x in enumerate(timerange):
+    for i, x in enumerate(bins):
         if mass_infall[:i].sum() / total_infall >= .5:
             halftime = x
             break
+    
+    dt = bins[1] * 1e9
+
+    mass_infall = np.log10(mass_infall / dt)
+    mass_infall_initial = np.log10(mass_infall_initial / dt)
+    mass_infall_reac = np.log10(mass_infall_reac / dt)
+    mass_ejection = np.log10(mass_ejection / dt)
+
 
     f, ax = plt.subplots(1, figsize=utils.figsize[::-1])
     ax.grid(True)
     ax.set_ylabel(r'Rate [$M_{\odot}\ yr^{-1}$]')
-    ax.set_yscale('log')
-    ax.set_ylim((1e-1, 2e2))
+    ax.set_ylim((-1, 2))
     ax.set_xlabel('Time [Gyr]')
-    ax.step(timerange[:-1], mass_infall, label='Total infall')
-    ax.step(timerange[:-1], mass_infall_initial, label='First infall')
-    ax.step(timerange[:-1], mass_infall_reac, label='Reacreation')
-    ax.plot([halftime, halftime], [0, np.max(mass_infall)], color='k')
+    ax.step(bins[:-1], mass_infall, label='Total infall')
+    ax.step(bins[:-1], mass_infall_initial, label='First infall')
+    ax.step(bins[:-1], mass_infall_reac, label='Reacreation')
+    ax.plot([halftime, halftime], [-10, 10], color='k')
     spacing, ha = 1, 'left'
     if halftime >= s.cosmic_time() / 2:
         spacing = -1
         ha='right'
-    ax.text(halftime + spacing * .1, np.max(mass_infall) / 2, 'half of integrated total infall', fontsize=17, ha=ha)
+    ax.text(halftime + spacing * .1, -.75, 'half of integrated total infall', fontsize=17, ha=ha)
     ax.legend(loc='upper right')
 
     f.tight_layout()
