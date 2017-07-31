@@ -72,7 +72,9 @@ def plot(args):
         height=np.diff(edges_d), log=True, align='edge')
     ax2.set_yscale('log')
     ax2.set_xscale('linear')
-    ax2.set_xlim(ax2.get_xlim()[::-1])
+    ax2_xlim = ax2.get_xlim()[::-1]
+    ax2_xlim[1] = 0
+    ax2.set_xlim(ax2_xlim)
     ax2.set_ylim(ax1.get_ylim())
     ax2.set_xlabel(r'$Mass\ [10^{9}\ M_\odot]$')
     ax2.tick_params(labelleft='off')    
@@ -82,7 +84,9 @@ def plot(args):
         width=np.diff(edges_h), align='edge', log=True)
     ax3.set_xscale('log')    
     ax3.set_yscale('linear')
-    ax3.set_ylim(ax3.get_ylim()[::-1])
+    ax3_ylim = ax3.get_ylim()[::-1]
+    ax3_ylim[1] = 0
+    ax3.set_ylim(ax3_ylim)
     ax3.set_xlim(ax1.get_xlim())
     ax3.set_ylabel(r'$Mass\ [10^{9}\ M_\odot]$')
     ax3.tick_params(labelbottom='off')    

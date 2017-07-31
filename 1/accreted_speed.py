@@ -13,7 +13,7 @@ filename = __file__
 
 def plot(args):
     halo, definition = args
-
+    print halo    
     path = '/ptmp/mpa/naab/REFINED/%s/SF_X/4x-2phase/out/snap_%s_4x_???' % (halo, halo)
     max = int(sorted(glob.glob(path))[-1][-3:])
     s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/%s/SF_X/4x-2phase/out/snap_%s_4x_%s' % (halo, halo, max), gas_trace='/u/mihac/data/%s/4x-2phase/gastrace_%s' % (halo, definition), star_form=None)
@@ -60,12 +60,18 @@ def plot(args):
     f, ax = plt.subplots(1, figsize=utils.figsize[::-1])
     ax.grid(True)
     ax.set_ylabel(r'Rate [$M_{\odot}\ yr^{-1}$]')
+    ax.set_yscale('log')
+    ax.set_ylim((1e-1, 2e2))
     ax.set_xlabel('Time [Gyr]')
     ax.step(timerange[:-1], mass_infall, label='Total infall')
     ax.step(timerange[:-1], mass_infall_initial, label='First infall')
     ax.step(timerange[:-1], mass_infall_reac, label='Reacreation')
     ax.plot([halftime, halftime], [0, np.max(mass_infall)], color='k')
-    ax.text(halftime + .1, np.max(mass_infall) / 2, 'half of integrated total infall')
+    spacing, ha = 1, 'left'
+    if halftime >= s.cosmic_time() / 2:
+        spacing = -1
+        ha='right'
+    ax.text(halftime + spacing * .1, np.max(mass_infall) / 2, 'half of integrated total infall', fontsize=17, ha=ha)
     ax.legend(loc='upper right')
 
     f.tight_layout()
@@ -74,7 +80,7 @@ def plot(args):
     
     plt.savefig(filename.split("/")[-1][:-3] + '_' + halo + '_' + definition + ".png", bbox_inches='tight')
 
-p = Pool(4)
+p = Pool(8)
 arguments = [(halo, 'halo') for halo in utils.halos]
 p.map(plot, arguments)
 
