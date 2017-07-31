@@ -56,6 +56,8 @@ def round_to_n(x, n):
 
 def str_fmt(x, n=1):
     " Format x into nice Latex rounding to n"
+    if x == 0:
+        return 0
     power = int(np.log10(round_to_n(x, 0)))
     f_SF = round_to_n(x, n) * pow(10, -power)
     return r"%s\cdot 10^{%s}" % (f_SF, power)

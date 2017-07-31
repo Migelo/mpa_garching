@@ -10,16 +10,22 @@ import utils
 
 filename = __file__
 
-bins = np.arange(3, 8.1, .1)
+bins = np.arange(2, 8.1, .1)
 
 def plot(args):
     halo = args[0]
     definition = args[1]
+    modification = ''
+    if '-' in halo:
+        modification = halo[5:]
+        halo = halo[:5]
     print args
-    path = '/ptmp/mpa/naab/REFINED/%s/SF_X/4x-2phase/out/snap_%s_4x_???' % (halo, halo)
+    path = '/ptmp/mpa/naab/REFINED/%s/SF_X/4x-2phase%s/out/snap_%s_4x_???' % (halo, modification, halo)
     max = int(sorted(glob.glob(path))[-1][-3:])
-    s_i, h_i, g_i = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/%s/SF_X/4x-2phase/out/snap_%s_4x_%s' % (halo, halo, max), gas_trace='/u/mihac/data/%s/4x-2phase/gastrace_%s' % (halo, definition), star_form=None)
-    s_h, h_h, g_h = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/%s/SF_X/4x-2phase/out/snap_%s_4x_%s' % (halo, halo, max), gas_trace='/u/mihac/data/%s/4x-2phase/gastrace_%s' % (halo, 'halo'), star_form=None)
+    s_i, h_i, g_i = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/%s/SF_X/4x-2phase%s/out/snap_%s_4x_%s' % (halo, modification, halo, max),
+        gas_trace='/u/mihac/data/%s/4x-2phase%s/gastrace_%s' % (halo, modification, definition), star_form=None)
+    s_h, h_h, g_h = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/%s/SF_X/4x-2phase%s/out/snap_%s_4x_%s' % (halo, modification, halo, max),
+        gas_trace='/u/mihac/data/%s/4x-2phase%s/gastrace_%s' % (halo, modification, 'halo'), star_form=None)
     time_bins = np.arange(0, s_i.cosmic_time() + .1, .25)
 
     R200_frac, Tcrit, rhocrit = [.15, '2e4 K', '1e-2 u/cm**3']
@@ -89,14 +95,10 @@ def plot(args):
 
     _, _, _, cbar = pg.plotting.scatter_map('log10(temp)', np.log10(last_T_i),
         s=cgm_i_m, qty='mass', colors=np.log10(cgm_i_m['metallicity']/pg.solar.Z()),
-        #s=cgm_m, qty='mass', colors=last_t,
-        logscale=True, bins=[bins, bins], extent=[[3, 8], [3, 8]],
+        logscale=True, bins=[bins, bins], extent=[[2, 8], [2, 8]],
         zero_is_white=True, clim=[-1., .49], colors_av='mass', 
-        #zero_is_white=True, clim=[2, s.cosmic_time()], colors_av='mass', 
         clogscale=False, ax=ax1)
-#        clogscale=False, ax=ax1)
     cbar_ax = cbar.ax
-    #cbar_ax.set_xlabel('last ejection time [Gyr]', fontsize=30)
     cbar_ax.set_xlabel(r'$log_{10} [ Z ] $', fontsize=30)
     plt.setp(cbar_ax.get_xticklabels(), fontsize=14)
     ax1.plot([5.2, 5.2], [0, 1e100], lw=3, c='k')
@@ -106,8 +108,8 @@ def plot(args):
     ax1.set_ylabel(r"$log_{10}(T_{last\ ej}\ [K])$", fontsize=30)
     plt.setp(ax1.get_xticklabels(), fontsize=25)
     plt.setp(ax1.get_yticklabels(), fontsize=25)
-    ax1.set_xlim([3, 8])
-    ax1.set_ylim([3, 8])
+    ax1.set_xlim([2, 8])
+    ax1.set_ylim([2, 8])
     limits = ax1.get_xlim()
     (left, right) = limits
     left += .05
@@ -140,9 +142,9 @@ def plot(args):
 
     f.tight_layout()
     plt.subplots_adjust(top=0.92)
-    f.suptitle('%s - %s' % (halo, 'ism ejected'), fontsize=44)
+    f.suptitle('%s%s - %s' % (halo, modification, 'ism ejected'), fontsize=44)
 
-    plt.savefig(filename.split("/")[-1][:-3] + '_' + halo + '_ism_ejection_metallicity.png', bbox_inches='tight')
+    plt.savefig(filename.split("/")[-1][:-3] + '_' + halo + modification + '_ism_ejection_metallicity.png', bbox_inches='tight')
 
 
 
@@ -156,14 +158,10 @@ def plot(args):
 
     _, _, _, cbar = pg.plotting.scatter_map('log10(temp)', np.log10(last_T_h),
         s=cgm_h_m, qty='mass', colors=np.log10(cgm_h_m['metallicity']/pg.solar.Z()),
-        #s=cgm_i_m, qty='mass', colors=last_t,
-        logscale=True, bins=[bins, bins], extent=[[3, 8], [3, 8]],
+        logscale=True, bins=[bins, bins], extent=[[2, 8], [2, 8]],
         zero_is_white=True, clim=[-1., .49], colors_av='mass', 
-        #zero_is_white=True, clim=[2, s.cosmic_time()], colors_av='mass', 
         clogscale=False, ax=ax1)
-#        clogscale=False, ax=ax1)
     cbar_ax = cbar.ax
-    #cbar_ax.set_xlabel('last ejection time [Gyr]', fontsize=30)
     cbar_ax.set_xlabel(r'$log_{10} [ Z ] $', fontsize=30)
     plt.setp(cbar_ax.get_xticklabels(), fontsize=14)
     ax1.plot([5.2, 5.2], [0, 1e100], lw=3, c='k')
@@ -173,8 +171,8 @@ def plot(args):
     ax1.set_ylabel(r"$log_{10}(T_{last\ infall}\ [K])$", fontsize=30)
     plt.setp(ax1.get_xticklabels(), fontsize=25)
     plt.setp(ax1.get_yticklabels(), fontsize=25)
-    ax1.set_xlim([3, 8])
-    ax1.set_ylim([3, 8])
+    ax1.set_xlim([2, 8])
+    ax1.set_ylim([2, 8])
     limits = ax1.get_xlim()
     (left, right) = limits
     left += .05
@@ -207,9 +205,9 @@ def plot(args):
 
     f.tight_layout()
     plt.subplots_adjust(top=0.92)
-    f.suptitle('%s - %s' % (halo, 'halo accreted'), fontsize=44)
+    f.suptitle('%s%s - %s' % (halo, modification, 'halo accreted'), fontsize=44)
 
-    plt.savefig(filename.split("/")[-1][:-3] + '_' + halo + '_hallo_infall_metallicity.png', bbox_inches='tight')
+    plt.savefig(filename.split("/")[-1][:-3] + '_' + halo + modification + '_hallo_infall_metallicity.png', bbox_inches='tight')
 
 
 
@@ -225,7 +223,7 @@ def plot(args):
 
     _, _, _, cbar = pg.plotting.scatter_map('log10(temp)', np.log10(last_T_i),
         s=cgm_i_m, qty='mass', colors=last_t_i,
-        logscale=True, bins=[bins, bins], extent=[[3, 8], [3, 8]],
+        logscale=True, bins=[bins, bins], extent=[[2, 8], [2, 8]],
         zero_is_white=True, clim=[2, s_i.cosmic_time()], colors_av='mass', 
         clogscale=False, ax=ax1)
     cbar_ax = cbar.ax
@@ -238,8 +236,8 @@ def plot(args):
     ax1.set_ylabel(r"$log_{10}(T_{last\ ej}\ [K])$", fontsize=30)
     plt.setp(ax1.get_xticklabels(), fontsize=25)
     plt.setp(ax1.get_yticklabels(), fontsize=25)
-    ax1.set_xlim([3, 8])
-    ax1.set_ylim([3, 8])
+    ax1.set_xlim([2, 8])
+    ax1.set_ylim([2, 8])
     limits = ax1.get_xlim()
     (left, right) = limits
     left += .05
@@ -272,11 +270,9 @@ def plot(args):
 
     f.tight_layout()
     plt.subplots_adjust(top=0.92)
-    f.suptitle('%s - %s' % (halo, 'ism ejected'), fontsize=44)
+    f.suptitle('%s%s - %s' % (halo, modification, 'ism ejected'), fontsize=44)
 
-    plt.savefig(filename.split("/")[-1][:-3] + '_' + halo + '_ism_ejection_ej_time.png', bbox_inches='tight')
-
-
+    plt.savefig(filename.split("/")[-1][:-3] + '_' + halo + modification + '_ism_ejection_ej_time.png', bbox_inches='tight')
 
 
 
@@ -288,7 +284,7 @@ def plot(args):
 
     _, _, _, cbar = pg.plotting.scatter_map('log10(temp)', np.log10(last_T_h),
         s=cgm_h_m, qty='mass', colors=last_t_h,
-        logscale=True, bins=[bins, bins], extent=[[3, 8], [3, 8]],
+        logscale=True, bins=[bins, bins], extent=[[2, 8], [2, 8]],
         zero_is_white=True, clim=[2, s_i.cosmic_time()], colors_av='mass', 
         clogscale=False, ax=ax1)
     cbar_ax = cbar.ax
@@ -301,8 +297,8 @@ def plot(args):
     ax1.set_ylabel(r"$log_{10}(T_{last\ infall}\ [K])$", fontsize=30)
     plt.setp(ax1.get_xticklabels(), fontsize=25)
     plt.setp(ax1.get_yticklabels(), fontsize=25)
-    ax1.set_xlim([3, 8])
-    ax1.set_ylim([3, 8])
+    ax1.set_xlim([2, 8])
+    ax1.set_ylim([2, 8])
     limits = ax1.get_xlim()
     (left, right) = limits
     left += .05
@@ -335,9 +331,9 @@ def plot(args):
 
     f.tight_layout()
     plt.subplots_adjust(top=0.92)
-    f.suptitle('%s - %s' % (halo, 'halo accreted'), fontsize=44)
+    f.suptitle('%s%s - %s' % (halo, modification, 'halo accreted'), fontsize=44)
 
-    plt.savefig(filename.split("/")[-1][:-3] + '_' + halo + '_hallo_infall_ej_time.png', bbox_inches='tight')
+    plt.savefig(filename.split("/")[-1][:-3] + '_' + halo + modification + '_hallo_infall_ej_time.png', bbox_inches='tight')
 
     
 
@@ -353,21 +349,13 @@ def plot(args):
     ax.legend(loc='upper right')
     f.tight_layout()
     plt.subplots_adjust(top=0.92)
-    f.suptitle('%s - %s' % (halo, definition), fontsize=44)
+    f.suptitle('%s%s - %s' % (halo, modification, definition), fontsize=44)
     
 
-    plt.savefig(filename.split("/")[-1][:-3] + '_' + halo + '_hist.png', bbox_inches='tight')
+    plt.savefig(filename.split("/")[-1][:-3] + '_' + halo + modification + '_hist.png', bbox_inches='tight')
     
-
-
-
-
-
-
-
-
-
 
 p = Pool(8)
-p.map(plot, utils.combinations)
+combinations = np.append(utils.combinations, ('M1859-weakFB', 'ism'))
+p.map(plot, combinations)
 
