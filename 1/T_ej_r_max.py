@@ -17,32 +17,44 @@ def plot(args):
     max = int(sorted(glob.glob(path))[-1][-3:])
     s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/%s/SF_X/4x-2phase/out/snap_%s_4x_%s' % (halo, halo, max), gas_trace='/u/mihac/data/%s/4x-2phase/gastrace_%s' % (halo, definition), star_form=None)
     
-    s_masked = s.gas[np.max(s.gas['T_at_ejection'], axis=-1) > 0]
+    mask = np.max(s.gas['T_at_ejection'], axis=-1) > 0
+    s_masked = s.gas[mask]
     
     f, ax = plt.subplots(2, figsize=utils.figsize)
-    pg.plotting.scatter_map(s_masked['cycle_r_max'].flatten(),
+    _, _, _, cbar = pg.plotting.scatter_map(s_masked['cycle_r_max'].flatten(),
         s_masked['T_at_ejection'].flatten(), s=s_masked,
-        qty='mass',
-        extent=[[0, 200], [1e3, 2e4]], logscale=True,
+        qty=s_masked['mass_at_ejection'].flatten(),
+        colors=s_masked['metals_at_ejection'].flatten()/s_masked['mass_at_ejection'].flatten()/pg.solar.Z(),
+        colors_av=s_masked['mass_at_ejection'].flatten(),
+        extent=[[0,100], [1e3, 2e4]], logscale=True,
+        clogscale=True, clim=[10**-1.5, 10**.5],
         zero_is_white=True, ax=ax[0])
-    ax[0].set_xlabel('cycle $r_{max}$ [kpc]')
-    ax[0].set_ylabel('T at ejection [K]')
-    plt.setp(ax[0].get_xticklabels(), rotation='vertical', fontsize=20)
+    cbar_ax = cbar.ax
+    cbar_ax.set_xlabel(r'$log_{10} [ Z ]_\odot  $', fontsize=16)
+    plt.setp(cbar_ax.get_xticklabels(), fontsize=14)    
+    ax[0].set_xlabel(r'$cycle\ r_{max}\ [kpc]$')
+    ax[0].set_ylabel(r'$T_{ejection}\ [K]$')
     
-    pg.plotting.scatter_map(np.log10(s_masked['cycle_r_max'].flatten()),
+    _, _, _, cbar = pg.plotting.scatter_map(np.log10(s_masked['cycle_r_max'].flatten()),
         np.log10(s_masked['T_at_ejection'].flatten()), s=s_masked,
-        qty='mass',
         extent=[[.5, 3.5], [3, 8]], logscale=True,
+        qty=s_masked['mass_at_ejection'].flatten(),
+        colors=s_masked['metals_at_ejection'].flatten()/s_masked['mass_at_ejection'].flatten()/pg.solar.Z(),
+        colors_av=s_masked['mass_at_ejection'].flatten(),
+        clogscale=True, clim=[10**-1.5, 10**.5],
         zero_is_white=True, ax=ax[1])
-    ax[1].set_xlabel(r'cycle $r_{max}$ [kpc]')
-    ax[1].set_ylabel('T at ejection [K]')
+    cbar_ax = cbar.ax
+    cbar_ax.set_xlabel(r'$log_{10} [ Z ]_\odot $', fontsize=16)
+    plt.setp(cbar_ax.get_xticklabels(), fontsize=14)    
+    ax[1].set_xlabel(r'$log_{10}\left(cycle\ r_{max}\ [kpc]\right)$')
+    ax[1].set_ylabel(r'$log_{10}\left(T_{ejection}\ [K]\right)$')
     
     f.tight_layout()
-    plt.subplots_adjust(top=0.93)
+    plt.subplots_adjust(top=0.95)
     f.suptitle('%s - %s' % (halo, definition), fontsize=20)
     
     plt.savefig(filename.split("/")[-1][:-3] + '_' + halo + '_' + definition + ".png", bbox_inches='tight')
 
-p = Pool(4)
+p = Pool(8)
 p.map(plot, utils.combinations)
 
