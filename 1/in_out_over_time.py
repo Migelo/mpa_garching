@@ -69,32 +69,39 @@ def plot(args):
 
     f, (ax1, ax2, ax3, ax4) = plt.subplots(4, figsize=utils.figsize * 2)
     axes = (ax1, ax2, ax3, ax4)
+    ax4.set_xlabel("Time [yr]", fontsize=46)
+    plt.setp(ax4.xaxis.get_majorticklabels(), fontsize=40)
     for ax in axes:
         ax.set_xlim((0, s.cosmic_time()))
-        ax.set_ylim((-2, 2))
-    ax4.set_xlabel("Time [yr]")
+        plt.setp(ax.yaxis.get_majorticklabels(), fontsize=25)
     for ax in axes[:-1]:
         ax.tick_params(labelbottom='off')
+    for ax in (ax1, ax2):
+        ax.set_ylim((-1, 2))
+    for ax in (ax3, ax4):
+        ax.set_ylim((-3.5, -.5))
 
     ax1.set_title("Mass")
     ax1.step(bins[:-1], mass_infall, label='Total infall')
     ax1.step(bins[:-1], mass_infall_initial, label='First infall')
     ax1.step(bins[:-1], mass_infall_reac, label='Subsequent infall')
-    lgd1 = ax1.legend(loc='best', fontsize=17)
+    lgd1 = ax1.legend(loc='upper left', fontsize=17)
+
     ax2.step(bins[:-1], mass_ejection, label='Total ejection')
     ax2.step(bins[:-1], mass_ejection_initial, label='First ejection')
     ax2.step(bins[:-1], mass_ejection_reac, label='Subsequent ejection')
-    lgd2 = ax2.legend(loc='best', fontsize=17)
+    lgd2 = ax2.legend(loc='upper left', fontsize=17)
 
     ax3.set_title("Metals")
     ax3.step(bins[:-1], metals_infall, label='Total infall')
     ax3.step(bins[:-1], metals_infall_initial, label='First infall')
     ax3.step(bins[:-1], metals_infall_reac, label='Subsequent ejection')
-    lgd3 = ax3.legend(loc='best', fontsize=17)
+    lgd3 = ax3.legend(loc='upper left', fontsize=17)
+
     ax4.step(bins[:-1], metals_ejection, label='Total ejection')
     ax4.step(bins[:-1], metals_ejection_initial, label='First ejection')
     ax4.step(bins[:-1], metals_ejection_reac, label='Subsequent ejection')
-    lgd4 = ax4.legend(loc='best', fontsize=17)
+    lgd4 = ax4.legend(loc='upper left', fontsize=17)
 
     f.tight_layout()
 
@@ -107,7 +114,7 @@ def plot(args):
 
     aux1 = f.add_subplot(gs[:, 0])
 
-    aux1.set_ylabel(r"$log_{10}\left(Mass\ rate\ [M_{\odot}/yr]\right)$", fontsize=30)
+    aux1.set_ylabel(r"$\log_{10}\left(Mass\ rate\ \mathrm{[M_{\odot}/yr]}\right)$", fontsize=46)
 
     for ax in [aux1,]:
         ax.tick_params(size=0)
