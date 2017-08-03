@@ -2,8 +2,11 @@ import numpy as np
 import os
 from random import shuffle
 import math
+import matplotlib as mpl
 
 figsize = np.array([8.268, 8.268*2**.5])
+tick_labelsize = mpl.rcParamsOrig['xtick.labelsize']
+axes_labelsize = mpl.rcParamsOrig['axes.labelsize']
 
 def prepare_step(y):
     '''
