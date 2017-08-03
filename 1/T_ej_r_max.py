@@ -21,19 +21,20 @@ def plot(args):
     s_masked = s.gas[mask]
     
     f, ax = plt.subplots(2, figsize=utils.figsize)
-    _, _, _, cbar = pg.plotting.scatter_map(s_masked['cycle_r_max'].flatten(),
-        s_masked['T_at_ejection'].flatten(), s=s_masked,
+
+    _, _, _, cbar = pg.plotting.scatter_map(np.log10(s_masked['cycle_r_max'].flatten()),
+        np.log10(s_masked['T_at_ejection'].flatten()), s=s_masked,
+        extent=[[.5, 3.5], [3, 8]], logscale=True,
         qty=s_masked['mass_at_ejection'].flatten(),
-        colors=s_masked['metals_at_ejection'].flatten()/s_masked['mass_at_ejection'].flatten()/pg.solar.Z(),
+        colors='ejection_time.flatten()',
         colors_av=s_masked['mass_at_ejection'].flatten(),
-        extent=[[0,100], [1e3, 2e4]], logscale=True,
-        clogscale=True, clim=[10**-1.5, 10**.5],
+        clogscale=False, clim=[2, s.cosmic_time()],
         zero_is_white=True, ax=ax[0])
     cbar_ax = cbar.ax
-    cbar_ax.set_xlabel(r'$log_{10} [ Z ]_\odot  $', fontsize=16)
+    cbar_ax.set_xlabel('Ejection time [Gyr]', fontsize=16)
     plt.setp(cbar_ax.get_xticklabels(), fontsize=14)    
-    ax[0].set_xlabel(r'$cycle\ r_{max}\ [kpc]$')
-    ax[0].set_ylabel(r'$T_{ejection}\ [K]$')
+    ax[0].set_ylabel(r'$T_\mathrm{ejection}\ \mathrm{[K]}$')
+    ax[0].tick_params(labelbottom='off')
     
     _, _, _, cbar = pg.plotting.scatter_map(np.log10(s_masked['cycle_r_max'].flatten()),
         np.log10(s_masked['T_at_ejection'].flatten()), s=s_masked,
@@ -44,10 +45,10 @@ def plot(args):
         clogscale=True, clim=[10**-1.5, 10**.5],
         zero_is_white=True, ax=ax[1])
     cbar_ax = cbar.ax
-    cbar_ax.set_xlabel(r'$log_{10} [ Z ]_\odot $', fontsize=16)
+    cbar_ax.set_xlabel(r'$\log_{10} [ Z ]_\odot $', fontsize=16)
     plt.setp(cbar_ax.get_xticklabels(), fontsize=14)    
-    ax[1].set_xlabel(r'$log_{10}\left(cycle\ r_{max}\ [kpc]\right)$')
-    ax[1].set_ylabel(r'$log_{10}\left(T_{ejection}\ [K]\right)$')
+    ax[1].set_xlabel(r'$\log_{10}\left(\mathrm{cycle }r_\mathrm{max}\ \mathrm{[kpc]}\right)$')
+    ax[1].set_ylabel(r'$\log_{10}\left(T_\mathrm{ejection}\ \mathrm{[K]}\right)$')
     
     f.tight_layout()
     plt.subplots_adjust(top=0.95)
@@ -55,6 +56,6 @@ def plot(args):
     
     plt.savefig(filename.split("/")[-1][:-3] + '_' + halo + '_' + definition + ".png", bbox_inches='tight')
 
-p = Pool(8)
+p = Pool(7)
 p.map(plot, utils.combinations)
 
