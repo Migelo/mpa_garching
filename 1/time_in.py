@@ -8,8 +8,6 @@ from multiprocessing import Pool
 
 filename = __file__
 
-plt.style.use('general')
-
 def plot(args):
     halo = args[0]
     definition = args[1]
@@ -39,11 +37,14 @@ def plot(args):
     infall_mass_one_binned, _, _ = stats.binned_statistic(time_one_infall, infall_mass_one, bins=bins, statistic='sum')
     infall_mass_multiple_binned, _, _ = stats.binned_statistic(time_multiple_infalls, infall_mass_multiple, bins=bins, statistic='sum')
 
-    f, ax = plt.subplots(1)
-    ax.set_xlabel(r"Time in the galaxy [Gyr]")
-    ax.set_ylabel(r"$log_{10}\left(Mass \left[ M_\odot \right]\right)$")
-    ax.bar(bins[:-1], np.log10(infall_mass_one_binned), width=np.diff(bins), alpha=.3, label="one infall", color='b', log=True)
-    ax.bar(bins[:-1], np.log10(infall_mass_multiple_binned), width=np.diff(bins), alpha=.3, label="multiple infalls", color='r', log=True)
+    f, ax = plt.subplots(1, figsize=utils.figsize[::-1])
+    ax.set_xlabel(r"$Time$ in the galaxy [Gyr]")
+    ax.set_ylabel(r"$\log_{10}\left(Mass\ \left[\mathrm{M_\odot}\right]\right)$")
+    ax.bar(bins[:-1], np.log10(infall_mass_one_binned), width=np.diff(bins),
+        alpha=.3, label="one infall", color='b', align='edge')
+    ax.bar(bins[:-1], np.log10(infall_mass_multiple_binned),
+        width=np.diff(bins), alpha=.3, label="multiple infalls", color='r',
+        align='edge')
     ax.set_xlim((0, 10.2))
     ax.set_ylim((5, 11))
     ax.legend(loc="upper right")
