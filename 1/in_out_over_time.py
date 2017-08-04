@@ -79,7 +79,7 @@ def plot(args):
     for ax in (ax1, ax2):
         ax.set_ylim((-1, 2))
     for ax in (ax3, ax4):
-        ax.set_ylim((-3.5, -.5))
+        ax.set_ylim((-3.5, 0))
 
     ax1.set_title("Mass")
     ax1.step(bins[:-1], mass_infall, label='Total infall')
