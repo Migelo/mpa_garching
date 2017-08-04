@@ -31,9 +31,9 @@ def plot(args):
         clogscale=False, clim=[2, s.cosmic_time()],
         zero_is_white=True, ax=ax[0])
     cbar_ax = cbar.ax
-    cbar_ax.set_xlabel('Ejection time [Gyr]', fontsize=16)
-    plt.setp(cbar_ax.get_xticklabels(), fontsize=14)    
-    ax[0].set_ylabel(r'$T_\mathrm{ejection}\ \mathrm{[K]}$')
+    cbar_ax.set_xlabel('Ejection time [Gyr]', fontsize=utils.axes_labelsize*.8)
+    plt.setp(cbar_ax.get_xticklabels(), fontsize=utils.tick_labelsize*.8)    
+    ax[0].set_ylabel(r'$T_\mathrm{ejection}\ \mathrm{[K]}$', fontsize=utils.axes_labelsize)
     ax[0].tick_params(labelbottom='off')
     
     _, _, _, cbar = pg.plotting.scatter_map(np.log10(s_masked['cycle_r_max'].flatten()),
@@ -45,14 +45,16 @@ def plot(args):
         clogscale=True, clim=[10**-1.5, 10**.5],
         zero_is_white=True, ax=ax[1])
     cbar_ax = cbar.ax
-    cbar_ax.set_xlabel(r'$\log_{10} [ Z ]_\odot $', fontsize=16)
-    plt.setp(cbar_ax.get_xticklabels(), fontsize=14)    
-    ax[1].set_xlabel(r'$\log_{10}\left(\mathrm{cycle }r_\mathrm{max}\ \mathrm{[kpc]}\right)$')
-    ax[1].set_ylabel(r'$\log_{10}\left(T_\mathrm{ejection}\ \mathrm{[K]}\right)$')
+    cbar_ax.set_xlabel(r'$\log_{10} [ Z ]_\odot $', fontsize=utils.axes_labelsize*.8)
+    plt.setp(cbar_ax.get_xticklabels(), fontsize=utils.tick_labelsize*.8)    
+    ax[1].set_xlabel(r'$\log_{10}\left(\mathrm{cycle}\ r_\mathrm{max}\ \mathrm{[kpc]}\right)$',
+        fontsize=utils.axes_labelsize)
+    ax[1].set_ylabel(r'$\log_{10}\left(T_\mathrm{ejection}\ \mathrm{[K]}\right)$',
+        fontsize=utils.axes_labelsize)
     
     f.tight_layout()
-    plt.subplots_adjust(top=0.95)
-    f.suptitle('%s - %s' % (halo, definition), fontsize=20)
+    plt.subplots_adjust(top=0.93)
+    f.suptitle('%s - %s' % (halo, definition))
     
     plt.savefig(filename.split("/")[-1][:-3] + '_' + halo + '_' + definition + ".png", bbox_inches='tight')
 
