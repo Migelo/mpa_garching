@@ -107,7 +107,7 @@ def plot(args):
     average_z, _, _ = stats.binned_statistic(np.concatenate(cycle_r_max),
         np.concatenate(metals_ejection), statistic='median', bins=bins)
 
-    ax[-2].grid(True)
+    ax[-2].set_title('All together')
     ax[-2].set_xlabel(('cycle r max [kpc]'))
     ax[-2].set_ylabel('z', color='b')
     ax[-2].step(bins[:-1], average_z)
@@ -121,7 +121,7 @@ def plot(args):
     ax2 = ax[-2].twinx()
     ax2.grid(False)
     ax2.step(bins[:-1], average_nor, color='r')
-    ax2.set_ylabel('average number of recycles', color='r')
+    ax2.set_ylabel('median num of rec', color='r')
     ax2.tick_params('y', colors='r')
     y2_min.append(ax2.get_ylim()[0])
     y2_max.append(ax2.get_ylim()[1])
@@ -137,8 +137,8 @@ def plot(args):
     ax[-1].legend(loc='upper right')
 
     f.tight_layout()
-    plt.subplots_adjust(top=0.97)
-    f.suptitle('%s - %s' % (halo, definition), fontsize=30)
+    plt.subplots_adjust(top=0.93)
+    f.suptitle('%s - %s' % (halo, definition))
         
     plt.savefig(filename.split("/")[-1][:-3] + '_' + halo + '_' + definition + ".png", bbox_inches='tight')
 
