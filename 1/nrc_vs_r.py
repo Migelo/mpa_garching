@@ -70,7 +70,7 @@ def plot(args):
         second_axes.append(ax[i].twinx())
         second_axes[-1].grid(False)
         second_axes[-1].step(bins[:-1], average_nor, color='r')
-        second_axes[-1].set_ylabel('average number of recycles', color='r')
+        second_axes[-1].set_ylabel('median num of rec', color='r')
         second_axes[-1].tick_params('y', colors='r')
         y_min.append(ax[i].get_ylim()[0])
         y_max.append(ax[i].get_ylim()[1])
