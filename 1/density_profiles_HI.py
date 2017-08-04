@@ -113,6 +113,19 @@ for i, args in enumerate(utils.combinations):
 y_label_3d = pg.analysis.profile_dens(s.gas, 'mass', r_edges=bins).units.latex()
 y_label_2d = pg.analysis.profile_dens(s.gas, 'mass', r_edges=bins, proj=1).units.latex()
 
+for i, item in enumerate(profiles):
+    for j in range(item.shape[1]):
+        profiles[i][:, j] = np.log10(profiles[i][:, j])
+    	profiles_surface[i][:, j] = np.log10(profiles_surface[i][:, j])
+	if i<3:
+	    HI_profiles_surface[i][:, j] = np.log10(HI_profiles_surface[i][:, j])
+	    MgII_profiles_surface[i][:, j] = np.log10(MgII_profiles_surface[i][:, j])
+	    OVI_profiles_surface[i][:, j] = np.log10(OVI_profiles_surface[i][:, j])
+	    HI_profiles[i][:, j] = np.log10(HI_profiles[i][:, j])
+	    MgII_profiles[i][:, j] = np.log10(MgII_profiles[i][:, j])
+	    OVI_profiles[i][:, j] = np.log10(OVI_profiles[i][:, j])
+
+
 # 3D density plots
 f = plt.figure(figsize=utils.figsize[::-1] * 2)
 gs = gridspec.GridSpec(3, 4)
@@ -125,13 +138,11 @@ ax6 = plt.subplot(gs[-1, 2])
 ax7 = plt.subplot(gs[:-1, 3])
 ax8 = plt.subplot(gs[-1, 3])
 
-#ax1.set_ylabel(r'$log_{10}\left(\rho\ [%s]\right)$' % y_label_3d, fontsize=44)
-ax1.set_ylabel(r'$\rho\ [%s]$' % y_label_3d, fontsize=30)
+ax1.set_ylabel(r'$log_{10}\left(\rho\ \mathrm{[%s]}\right)$' % y_label_3d, fontsize=30)
 ax2.set_ylabel(r'$\rho_{non\ recycled}/\rho_{recycled}$', fontsize=28)
 
 for a in (ax1, ax3, ax5, ax7):
     a.tick_params(labelbottom='off')
-    a.set_yscale('log')
     a.set_xlim((0, 200))
 for a in (ax2, ax4, ax6, ax8):
     a.set_ylim((1e-1, 1e1))
@@ -139,10 +150,10 @@ for a in (ax2, ax4, ax6, ax8):
     a.plot([-200, 200], [1, 1], color='k')
     a.set_xlabel(r'$r\ [kpc]$', fontsize=44)
 
-ax1.set_ylim((1e-1, 1e7))
-ax3.set_ylim((1e-3, 1e5))
-ax5.set_ylim((1e-6, 1e2))
-ax7.set_ylim((1e-5, 1e3))
+ax1.set_ylim((-1, 7))
+ax3.set_ylim((-3, 5))
+ax5.set_ylim((-6, 2))
+ax7.set_ylim((-5, 3))
 
 ax1.set_title('All gas')
 ax3.set_title('HI')
@@ -192,10 +203,10 @@ ax7.fill_between(bins[:-1], np.percentile(OVI_profiles[1], 25, axis=1),
 ax7.fill_between(bins[:-1], np.percentile(OVI_profiles[2], 25, axis=1),
     np.percentile(OVI_profiles[2], 75, axis=1), alpha=.25, color='g')
 
-ax2.plot(bins[:-1], np.percentile(profiles[6], 50, axis=1) / np.percentile(profiles[3], 50, axis=1))
-ax4.plot(bins[:-1], np.percentile(HI_profiles[2], 50, axis=1) / np.percentile(HI_profiles[1], 50, axis=1))
-ax6.plot(bins[:-1], np.percentile(MgII_profiles[2], 50, axis=1) / np.percentile(MgII_profiles[1], 50, axis=1))
-ax8.plot(bins[:-1], np.percentile(OVI_profiles[2], 50, axis=1) / np.percentile(OVI_profiles[1], 50, axis=1))
+ax2.plot(bins[:-1], 10**np.percentile(profiles[6], 50, axis=1) / 10**np.percentile(profiles[3], 50, axis=1))
+ax4.plot(bins[:-1], 10**np.percentile(HI_profiles[2], 50, axis=1) / 10**np.percentile(HI_profiles[1], 50, axis=1))
+ax6.plot(bins[:-1], 10**np.percentile(MgII_profiles[2], 50, axis=1) / 10**np.percentile(MgII_profiles[1], 50, axis=1))
+ax8.plot(bins[:-1], 10**np.percentile(OVI_profiles[2], 50, axis=1) / 10**np.percentile(OVI_profiles[1], 50, axis=1))
 
 ax2.set_xlim(ax1.get_xlim())
 ax4.set_xlim(ax3.get_xlim())
@@ -208,13 +219,11 @@ plt.savefig(filename.split("/")[-1][:-3] + ".png", bbox_inches='tight')
 
 f, ax = plt.subplots(3, figsize=utils.figsize)
 for a in ax:
-    #a.set_ylabel(r'$log_{10}\left(\rho\ [%s]\right)$' % y_label_3d, fontsize=15)
-    a.set_ylabel(r'$\rho\ [%s]$' % y_label_3d, fontsize=20)
-    a.set_yscale('log')
-    a.set_ylim((1e1, 1e6))
+    a.set_ylabel(r'$\log_{10}\left(\rho\ \mathrm{[%s]}\right)$' % y_label_3d, fontsize=20)
+    a.set_ylim((1, 6))
     a.set_xlim((0, 200))
 ax[0].set_title('All gas')
-ax[2].set_xlabel(r'$r\ [kpc]$', fontsize=20)
+ax[2].set_xlabel(r'$r\ \mathrm{[kpc]}$', fontsize=20)
 ax[0].tick_params(labelbottom='off')
 ax[1].tick_params(labelbottom='off')
 
@@ -254,25 +263,25 @@ ax6 = plt.subplot(gs[-1, 2])
 ax7 = plt.subplot(gs[:-1, 3])
 ax8 = plt.subplot(gs[-1, 3])
 
-#ax1.set_ylabel(r'$log_{10}\left(\Sigma\ [%s]\right)$' % y_label_2d, fontsize=44)
-ax1.set_ylabel(r'$\Sigma\ [%s]$' % y_label_2d, fontsize=30)
-ax2.set_ylabel(r'$\Sigma_{non\ recycled}/\Sigma_{recycled}$', fontsize=28)
+ax1.set_ylabel(r'$\log_{10}\left(\Sigma\ \mathrm{[%s]}\right)$' % y_label_2d, fontsize=30)
+ax2.set_ylabel(r'$\Sigma_\mathrm{non recycled}/\Sigma_\mathrm{recycled}$', fontsize=28)
 
 for a in (ax1, ax3, ax5, ax7):
     a.tick_params(labelbottom='off')
     a.set_xlim((0, 200))
-    a.set_yscale('log')
+#    a.set_yscale('log')
 for a in (ax2, ax4, ax6, ax8):
+#    a.set_ylim((1e-1, 1e1))
     a.set_ylim((1e-1, 1e1))
     a.set_xlim((0, 200))
     a.set_yscale('log')
     a.plot([0, 200], [1, 1], color='k')
-    a.set_xlabel(r'$r\ [kpc]$', fontsize=44)
+    a.set_xlabel(r'$r\ \mathrm{[kpc]}$', fontsize=44)
 
-ax1.set_ylim((1e3, 1e11))
-ax3.set_ylim((1e-1, 1e7))
-ax5.set_ylim((1e-3, 1e5))
-ax7.set_ylim((1e-3, 1e5))
+ax1.set_ylim((3, 11))
+ax3.set_ylim((-1, 7))
+ax5.set_ylim((-3, 5))
+ax7.set_ylim((-3, 5))
 
 ax1.set_title('All gas')
 ax3.set_title('HI')
@@ -322,10 +331,10 @@ ax7.fill_between(bins[:-1], np.percentile(OVI_profiles_surface[1], 25, axis=1),
 ax7.fill_between(bins[:-1], np.percentile(OVI_profiles_surface[2], 25, axis=1),
     np.percentile(OVI_profiles_surface[2], 75, axis=1), alpha=.25, color='g')
 
-ax2.plot(bins[:-1], np.percentile(profiles_surface[6], 50, axis=1) / np.percentile(profiles_surface[3], 50, axis=1))
-ax4.plot(bins[:-1], np.percentile(HI_profiles_surface[2], 50, axis=1) / np.percentile(HI_profiles_surface[1], 50, axis=1))
-ax6.plot(bins[:-1], np.percentile(MgII_profiles_surface[2], 50, axis=1) / np.percentile(MgII_profiles_surface[1], 50, axis=1))
-ax8.plot(bins[:-1], np.percentile(OVI_profiles_surface[2], 50, axis=1) / np.percentile(OVI_profiles_surface[1], 50, axis=1))
+ax2.plot(bins[:-1], 10**np.percentile(profiles_surface[6], 50, axis=1) / 10**np.percentile(profiles_surface[3], 50, axis=1))
+ax4.plot(bins[:-1], 10**np.percentile(HI_profiles_surface[2], 50, axis=1) / 10**np.percentile(HI_profiles_surface[1], 50, axis=1))
+ax6.plot(bins[:-1], 10**np.percentile(MgII_profiles_surface[2], 50, axis=1) / 10**np.percentile(MgII_profiles_surface[1], 50, axis=1))
+ax8.plot(bins[:-1], 10**np.percentile(OVI_profiles_surface[2], 50, axis=1) / 10**np.percentile(OVI_profiles_surface[1], 50, axis=1))
 
 for a in (ax1, ax3, ax5, ax7):
     plt.setp(a.yaxis.get_majorticklabels(), fontsize=20)
@@ -339,13 +348,13 @@ plt.savefig(filename.split("/")[-1][:-3] + "_surface.png", bbox_inches='tight')
 
 f, ax = plt.subplots(3, figsize=utils.figsize)
 for a in ax:
-    #a.set_ylabel(r'$log_{10}\left(\rho\ [%s]\right)$' % y_label_3d, fontsize=15)
-    a.set_ylabel(r'$\Sigma\ [%s]$' % y_label_2d, fontsize=20)
-    a.set_yscale('log')
-    a.set_ylim((1e4, 1e8))
+    a.set_ylabel(r'$log_{10}\left(\Sigma\ \mathrm{[%s]}\right)$' % y_label_2d, fontsize=20)
+#    a.set_yscale('log')
+#    a.set_ylim((1e4, 1e8))
+    a.set_ylim((4, 8))
     a.set_xlim((0, 200))
 ax[0].set_title('All gas')
-ax[2].set_xlabel(r'$r\ [kpc]$', fontsize=20)
+ax[2].set_xlabel(r'$r\ \mathrm{[kpc]}$', fontsize=20)
 ax[0].tick_params(labelbottom='off')
 ax[1].tick_params(labelbottom='off')
 
