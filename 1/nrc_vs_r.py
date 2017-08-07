@@ -56,9 +56,9 @@ def plot(args):
         if len(cycle_r_max) == 0:
             continue
         average_nor, _, _ = stats.binned_statistic(cycle_r_max,
-            extended_nrc, statistic='median', bins=bins)
+            extended_nrc, statistic='mean', bins=bins)
         average_z, _, _ = stats.binned_statistic(cycle_r_max,
-            metallicity_at_ejection, statistic='median', bins=bins)
+            metallicity_at_ejection, statistic='mean', bins=bins)
         
         ax[i].set_ylabel('z', color='b')
         ax[i].step(bins[:-1], average_z)
@@ -70,7 +70,7 @@ def plot(args):
         second_axes.append(ax[i].twinx())
         second_axes[-1].grid(False)
         second_axes[-1].step(bins[:-1], average_nor, color='r')
-        second_axes[-1].set_ylabel('median num of rec', color='r')
+        second_axes[-1].set_ylabel('mean num of rec', color='r')
         second_axes[-1].tick_params('y', colors='r')
         y_min.append(ax[i].get_ylim()[0])
         y_max.append(ax[i].get_ylim()[1])
@@ -94,18 +94,18 @@ def plot(args):
     average_metallicity, edges_met, _ = stats.binned_statistic(
         ejection_z, metallicity_ejection,
         bins=time_bins, statistic='mean')
-    median_metallicity, edges_met, _ = stats.binned_statistic(
+    mean_metallicity, edges_met, _ = stats.binned_statistic(
         ejection_z, metallicity_ejection,
-        bins=time_bins, statistic='median')
+        bins=time_bins, statistic='mean')
 
     for i, particle in enumerate(cycle_r_max):
         for line in particle:
             extended_nor.append(number_of_recycles[i])
 
     average_nor, _, _ = stats.binned_statistic(np.concatenate(cycle_r_max),
-        extended_nor, statistic='median', bins=bins)
+        extended_nor, statistic='mean', bins=bins)
     average_z, _, _ = stats.binned_statistic(np.concatenate(cycle_r_max),
-        np.concatenate(metals_ejection), statistic='median', bins=bins)
+        np.concatenate(metals_ejection), statistic='mean', bins=bins)
 
     ax[-2].set_title('All together')
     ax[-2].set_xlabel(('cycle r max [kpc]'))
@@ -121,7 +121,7 @@ def plot(args):
     ax2 = ax[-2].twinx()
     ax2.grid(False)
     ax2.step(bins[:-1], average_nor, color='r')
-    ax2.set_ylabel('median num of rec', color='r')
+    ax2.set_ylabel('mean num of rec', color='r')
     ax2.tick_params('y', colors='r')
     y2_min.append(ax2.get_ylim()[0])
     y2_max.append(ax2.get_ylim()[1])
@@ -133,7 +133,7 @@ def plot(args):
     ax[-1].set_xlabel('redshift')
     ax[-1].set_ylabel('metallicity')
     ax[-1].step(edges_met[:-1], average_metallicity, label='average')
-    ax[-1].step(edges_met[:-1], median_metallicity, label='median')
+    ax[-1].step(edges_met[:-1], mean_metallicity, label='mean')
     ax[-1].legend(loc='upper right')
 
     f.tight_layout()
