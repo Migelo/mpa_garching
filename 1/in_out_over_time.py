@@ -69,7 +69,7 @@ def plot(args):
 
     f, (ax1, ax2, ax3, ax4) = plt.subplots(4, figsize=utils.figsize * 2)
     axes = (ax1, ax2, ax3, ax4)
-    ax4.set_xlabel("Time [yr]", fontsize=46)
+    ax4.set_xlabel("Time [Gyr]", fontsize=46)
     plt.setp(ax4.xaxis.get_majorticklabels(), fontsize=40)
     for ax in axes:
         ax.set_xlim((0, s.cosmic_time()))
