@@ -26,11 +26,12 @@ def plot(args):
 
     f, ax = plt.subplots(1, figsize=utils.figsize[::-1])
     _, _, _, cbar = pg.plotting.scatter_map(np.log10(r_max), np.log10(z_ej),
-        qty=s_m['mass_at_ejection'][mask], logscale=True,
-        extent=[[.5, 4], [-4, -.5]], bins=25, vlim=[10**6, 10**9.49],
+        qty=s_m['mass_at_ejection'][mask], logscale=True, clogscale=True,
+        colors=s_m['T_at_ejection'][mask], colors_av=s_m['mass_at_ejection'][mask],
+        extent=[[.5, 4], [-4, -.5]], bins=25, vlim=[10**6, 10**9.49], clim=[1e3, 10**7.9],
         ax=ax, zero_is_white=True)
     cbar_ax = cbar.ax
-    cbar_ax.set_xlabel(r'$\log_{10}\left( Mass\ \mathrm{[M_\odot]} \right)$', fontsize=utils.axes_labelsize*.8)
+    cbar_ax.set_xlabel(r'$\log_{10}\left( T_\mathrm{ejection}\ \mathrm{[K]} \right)$', fontsize=utils.axes_labelsize*.8)
     plt.setp(cbar_ax.get_xticklabels(), fontsize=utils.tick_labelsize*.8)
     text = cbar_ax.xaxis.get_label().set_path_effects([path_effects.Stroke(linewidth=3, foreground='white'), path_effects.Normal()])
     cbar_ax.xaxis.set_label(text)
