@@ -7,11 +7,12 @@ import glob
 from multiprocessing import Pool
 import utils
 
-filename = __file__
+#filename = __file__
+filename = '/in_out_over_time.py'
 
 def plot(args):
     halo, definition = args
-    print halo
+    print halo, definition
     path = '/ptmp/mpa/naab/REFINED/%s/SF_X/4x-2phase/out/snap_%s_4x_???' % (halo, halo)
     max = int(sorted(glob.glob(path))[-1][-3:])
     s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/%s/SF_X/4x-2phase/out/snap_%s_4x_%s' % (halo, halo, max), gas_trace='/u/mihac/data/%s/4x-2phase/gastrace_%s' % (halo, definition), star_form=None)
@@ -77,31 +78,31 @@ def plot(args):
     for ax in axes[:-1]:
         ax.tick_params(labelbottom='off')
     for ax in (ax1, ax2):
-        ax.set_ylim((-1, 2))
+        ax.set_ylim((-1, 3))
     for ax in (ax3, ax4):
-        ax.set_ylim((-3.5, 0))
+        ax.set_ylim((-3.5, 1))
 
     ax1.set_title("Mass")
     ax1.step(bins[:-1], mass_infall, label='Total infall')
     ax1.step(bins[:-1], mass_infall_initial, label='First infall')
     ax1.step(bins[:-1], mass_infall_reac, label='Subsequent infall')
-    lgd1 = ax1.legend(loc='upper left', fontsize=17)
+    lgd1 = ax1.legend(bbox_to_anchor=(1.03, 1), loc=2, borderaxespad=0., fontsize=17)
 
     ax2.step(bins[:-1], mass_ejection, label='Total ejection')
     ax2.step(bins[:-1], mass_ejection_initial, label='First ejection')
     ax2.step(bins[:-1], mass_ejection_reac, label='Subsequent ejection')
-    lgd2 = ax2.legend(loc='upper left', fontsize=17)
+    lgd2 = ax2.legend(bbox_to_anchor=(1.03, 1), loc=2, borderaxespad=0., fontsize=17)
 
     ax3.set_title("Metals")
     ax3.step(bins[:-1], metals_infall, label='Total infall')
     ax3.step(bins[:-1], metals_infall_initial, label='First infall')
     ax3.step(bins[:-1], metals_infall_reac, label='Subsequent ejection')
-    lgd3 = ax3.legend(loc='upper left', fontsize=17)
+    lgd3 = ax3.legend(bbox_to_anchor=(1.03, 1), loc=2, borderaxespad=0., fontsize=17)
 
     ax4.step(bins[:-1], metals_ejection, label='Total ejection')
     ax4.step(bins[:-1], metals_ejection_initial, label='First ejection')
     ax4.step(bins[:-1], metals_ejection_reac, label='Subsequent ejection')
-    lgd4 = ax4.legend(loc='upper left', fontsize=17)
+    lgd4 = ax4.legend(bbox_to_anchor=(1.03, 1), loc=2, borderaxespad=0., fontsize=17)
 
     f.tight_layout()
 
@@ -129,4 +130,5 @@ def plot(args):
 
 p = Pool(8)
 p.map(plot, utils.combinations)
-
+#for comb in utils.combinations:
+#    plot(comb)
