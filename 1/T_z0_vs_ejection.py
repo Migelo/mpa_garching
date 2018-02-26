@@ -323,12 +323,12 @@ def plot(args):
     # histogram
     f, ax = plt.subplots(1, figsize=utils.figsize[::-1])
     ax.set_xlabel('Cosmic time [Gyr]')
-    ax.set_ylabel(r'Accretion rate $[10^9M_\odot]$')
+    ax.set_ylabel(r'Accretion rate $[M_\odot\ yr^{-1}]$')
     ax.set_xlim((0, 13.8))
-    ax.bar(time_bins[:-1], last_mass_i_hist / 1e9, np.diff(time_bins),
-        label='ism ejected')
-    ax.bar(time_bins[:-1], last_mass_h_hist / 1e9, np.diff(time_bins),
-        label='halo accreted', alpha=.5)
+    ax.bar(time_bins[:-1], last_mass_i_hist / 1e0 / (1e9 * np.diff(time_bins)),
+        np.diff(time_bins), label='ism ejected')
+    ax.bar(time_bins[:-1], last_mass_h_hist / 1e0 / (1e9 * np.diff(time_bins)),
+        np.diff(time_bins), label='halo accreted', alpha=.5)
     ax.legend(loc='upper left', fontsize=20)
     f.tight_layout()
     plt.subplots_adjust(top=0.92)
