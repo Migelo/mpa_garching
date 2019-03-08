@@ -29,7 +29,7 @@ def plot(args):
     s, h, g = pg.prepare_zoom('/ptmp/mpa/naab/REFINED/%s/SF_X/4x-2phase%s/out/snap_%s_4x_%s' % (halo, modification, halo, max),
         gas_trace=None, star_form=None)
     
-    f, ax = plt.subplots(2, figsize=(10, 5))
+    f, ax = plt.subplots(1, 2, figsize=(10, 5))
     f.suptitle(halo, fontsize=44)
     pg.plotting.image(s.gas, qty='HI', extent='306 kpc', ax=ax[0])
     pg.plotting.image(s.gas, qty='HI', extent='306 kpc', ax=ax[1], xaxis=0, yaxis=2)
