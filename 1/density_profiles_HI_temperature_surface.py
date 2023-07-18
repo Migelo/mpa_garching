@@ -51,8 +51,8 @@ y_label = pg.analysis.radially_binned(s.gas, 'temp', av='MgII', r_edges=bins, pr
 # log and smooth
 for i, item in enumerate(MgII_profiles):
     for j in range(item.shape[1]):
-        MgII_profiles[i][:, j] = signal.savgol_filter(np.log10(MgII_profiles[i][:, j]), 5, 3)
-        OVI_profiles[i][:, j] = signal.savgol_filter(np.log10(OVI_profiles[i][:, j]), 5, 3)
+        MgII_profiles[i][:, j] = np.log10(MgII_profiles[i][:, j]),
+        OVI_profiles[i][:, j] = np.log10(OVI_profiles[i][:, j])
 
 f = plt.figure(figsize=utils.figsize[::-1] * 2)
 gs = gridspec.GridSpec(3, 2)
