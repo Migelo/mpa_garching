@@ -3,6 +3,12 @@ import os
 from random import shuffle
 import math
 import matplotlib as mpl
+import matplotlib.pyplot as plt
+import sys
+from types import ModuleType, FunctionType
+from gc import get_referents
+from tqdm import tqdm
+
 
 figsize = np.array([8.268, 8.268*2**.5])
 tick_labelsize = mpl.rcParamsOrig['xtick.labelsize']
@@ -67,3 +73,59 @@ def str_fmt(x, n=1):
 
 def flatten_list(array):
     return [item for sublist in array for item in sublist]
+
+
+
+def getsize(obj):
+    """sum size of object & members in MB."""
+    import sys
+    from types import ModuleType, FunctionType
+    from gc import get_referents
+
+    # Custom objects know their class.
+    # Function objects seem to know way too much, including modules.
+    # Exclude modules as well.
+    BLACKLIST = type, ModuleType, FunctionType
+
+
+    if isinstance(obj, BLACKLIST):
+        raise TypeError('getsize() does not take argument of type: '+ str(type(obj)))
+    seen_ids = set()
+    size = 0
+    objects = [obj]
+    while objects:
+        need_referents = []
+        for obj in objects:
+            if not isinstance(obj, BLACKLIST) and id(obj) not in seen_ids:
+                seen_ids.add(id(obj))
+                size += sys.getsizeof(obj)
+                need_referents.append(obj)
+        objects = get_referents(*need_referents)
+    return size/(1024**2)
+
+
+def radial_shell(r0, dr):
+    """Returns a mask including particles within r0 + dr"""
+    r0 = pg.UnitScalar(r0)
+    dr = pg.UnitScalar(dr)
+    inner = pg.BallMask(r0) 
+    outer = pg.BallMask(r0 + dr)
+    shell = outer & ~inner
+    return shell
+
+
+def covering_fractions(snap, qty, r_start, r_end, dr, treshold):
+    """Calculate covering fractions for qty from r_start to
+    r_end in steps of dr counting values over treshold"""
+    r_start = pg.UnitScalar(r_start)
+    r_end = pg.UnitScalar(r_end)
+    dr = pg.UnitScalar(dr)
+
+    bins = np.arange(r_start, r_end + dr, dr)
+    qty_binned = np.zeros(bins.shape)
+    total_mass_binned = np.zeros(bins.shape)
+    for i, r in tqdm(enumerate(bins), total=bins.size):
+        shell = radial_shell(r, dr)
+        total_mass_binned[i] = snap.gas[shell]['mass'].sum()
+        qty_binned[i] = snap.gas[shell][qty].sum()
+    return qty_binned / total_mass_binned
