@@ -217,12 +217,12 @@ f.tight_layout()
 
 plt.savefig(filename.split("/")[-1][:-3] + ".png", bbox_inches='tight')
 
-f, ax = plt.subplots(3, figsize=utils.figsize)
+f, ax = plt.subplots(3, figsize=utils.figsize, dpi=220)
 for a in ax:
     a.set_ylabel(r'$\log_{10}\left(\rho\ \mathrm{[%s]}\right)$' % y_label_3d, fontsize=20)
     a.set_ylim((1, 6))
     a.set_xlim((0, 200))
-ax[0].set_title('All gas')
+#ax[0].set_title('All gas')
 ax[2].set_xlabel(r'$r\ \mathrm{[kpc]}$', fontsize=20)
 ax[0].tick_params(labelbottom='off')
 ax[1].tick_params(labelbottom='off')
